@@ -48,7 +48,7 @@ shan-code-review  雙軸平行審查 ──→ 審查報告
 |---|---|
 | `shan-setup` | ✅ |
 | `shan-grill` | ✅ |
-| `shan-to-spec` | 待建 |
+| `shan-to-spec` | ✅ |
 | `shan-spec-qa` | 待建 |
 | `shan-plan` | 待建 |
 | `shan-implement` | 待建 |
