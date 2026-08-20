@@ -1,0 +1,24 @@
+### 作業系統 ###
+.DS_Store
+Thumbs.db
+desktop.ini
+
+### 編輯器 / IDE ###
+.vscode/
+.idea/
+*.swp
+*~
+
+### Office 暫存鎖定檔 ###
+~$*
+
+### 本機草稿與暫存 ###
+.scratch/
+tmp/
+*.local.md
+
+### Claude Code 本機狀態 ###
+# 這個目錄會透過 junction / symlink 掛成 ~/.claude/skills，
+# 工具寫進來的本機設定不該進版控
+settings.local.json
+.claude/
