@@ -1,6 +1,6 @@
 ---
 name: shan-to-spec
-description: 把 shan-grill 的決策清單（或當前對話）綜合成 spec 草稿三份，寫進草稿區等使用者核可後才進 spec 目錄。當使用者說「產 spec」「把結論寫成規格」「寫 requirements」「shan-to-spec」，或審訊已定案要進入規格階段時使用。不面談——要問問題請先跑 shan-grill；產好的 spec 要品保用 shan-spec-qa；要排開發計畫用 shan-plan。
+description: 把 shan-grill 的決策清單（或當前對話）綜合成 spec 草稿，寫進草稿區等使用者核可後才進 spec 目錄。當使用者說「產 spec」「把結論寫成規格」「寫 requirements」「shan-to-spec」，或審訊已定案要進入規格階段時使用。不面談——要問問題請先跑 shan-grill；產好的 spec 要品保用 shan-spec-qa；要排開發計畫用 shan-plan。
 disable-model-invocation: true
 ---
 
@@ -19,6 +19,18 @@ disable-model-invocation: true
 3. **決策來源** —— `<草稿區>/<feature-slug>/grill.md`。沒有這個檔就從當前對話綜合，並在交付時說明「本次沒有 grill 記錄，決策來自對話」
 4. **專案脈絡** —— 依 config **B 節**的順序讀。詞彙用 config B 節指定的來源，不要自創同義詞
 5. **Codebase** —— 探索要動到的區域。事實查核走 config **C 節**，不憑記憶斷言任何 class / 欄位 / 設定鍵存在
+
+### 份數與檔名由格式契約決定
+
+Step 4–6 是三個**角色**，不是三個固定檔名：
+
+| 角色 | 承載什麼 |
+|---|---|
+| **需求**（what / why） | 使用者故事、可觀察的驗收條件、本 spec 的詞彙 |
+| **設計**（how） | 架構、資料模型、介面契約、已定案決策 |
+| **任務**（do） | 執行順序、依賴邊、回指標記 |
+
+契約把兩個角色併在同一個檔，就寫進同一個檔；契約沒有某個角色，就跳過那一步。**MUST NOT 自行決定要產幾個檔**——一律照契約。
 
 ---
 
@@ -49,7 +61,7 @@ disable-model-invocation: true
 
 ---
 
-## Step 4：寫 requirements
+## Step 4：寫需求（what / why）
 
 依格式契約產出。內容要求：
 
@@ -60,7 +72,7 @@ disable-model-invocation: true
 
 ---
 
-## Step 5：寫 design
+## Step 5：寫設計（how）
 
 依格式契約產出。內容要求：
 
@@ -72,7 +84,7 @@ disable-model-invocation: true
 
 ---
 
-## Step 6：寫 tasks
+## Step 6：寫任務（do）
 
 依格式契約產出，切法看 config **F 節**：
 
@@ -93,12 +105,12 @@ disable-model-invocation: true
 
 ## Step 7：交付
 
-三份寫進 `<草稿區>/<feature-slug>/spec-draft/`，然後：
+產出寫進 `<草稿區>/<feature-slug>/spec-draft/`，然後：
 
 1. 列出產出的檔案與各自的規模（幾條需求、幾個決策、幾個任務）
 2. 摘要 Step 3 議定的 seam
 3. 點出你在綜合過程中**自行補的假設**（grill.md 沒講、你依 codebase 現況推斷的），逐條列出來讓使用者複核
-4. 告訴使用者下一步：跑 `/shan-spec-qa` 品保，通過後再由**他自己**把三份搬進 config A 節的 spec 目錄
+4. 告訴使用者下一步：跑 `/shan-spec-qa` 品保，通過後再由**他自己**把產出搬進 config A 節的 spec 目錄
 
 **MUST NOT 直接寫入 spec 目錄。** 那道搬遷動作是人工核可閘門（config A 節）。
 
@@ -106,7 +118,7 @@ disable-model-invocation: true
 
 ## 完成條件
 
-- 草稿區有三份文件，標題與必要章節**逐字符合**格式契約
+- 草稿區的產出**份數與檔名符合格式契約**，標題與必要章節**逐字相符**
 - 每個任務都有回指標記，每個驗收條件都被至少一個任務涵蓋
 - 每個決策都有人拍過板（來自 `grill.md`，或使用者在 Step 2 明確授權）
 - 自行補的假設已逐條列給使用者
