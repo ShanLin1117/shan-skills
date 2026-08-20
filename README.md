@@ -51,7 +51,7 @@ shan-code-review  雙軸平行審查 ──→ 審查報告
 | `shan-to-spec` | ✅ |
 | `shan-spec-qa` | ✅ |
 | `shan-plan` | ✅ |
-| `shan-implement` | 待建 |
+| `shan-implement` | ✅ |
 | `shan-code-review` | 待建 |
 
 開發期間所有 skill 都掛 `disable-model-invocation: true`（只能手動 `/shan-xxx` 叫），避免全域生效時亂觸發。整套穩定後再逐支決定要不要開自動觸發。
