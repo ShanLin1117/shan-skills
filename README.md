@@ -54,6 +54,10 @@ ln -s "<這個 repo 的絕對路徑>" ~/.claude/skills
 
 放全域而不是放進專案，有三個好處：跨專案通用、不污染客戶 repo、git worktree 裡也看得到。
 
+## 完整走查
+
+想看整條鏈怎麼運作，見 [WORKFLOW.md](./WORKFLOW.md)——一個功能從發想到審查走完七個階段，含審查回饋怎麼接、多輪怎麼收斂、可以從哪些階段中間切入。
+
 ## 開始使用
 
 1. 在專案根目錄開 Claude Code，跑 `/shan-setup`。它會探索專案、把發現攤開、逐節問你，最後寫出 `.shan/config.md`。

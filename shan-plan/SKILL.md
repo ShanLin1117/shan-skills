@@ -169,9 +169,9 @@ disable-model-invocation: true
 > /shan-implement 先讀 <草稿區>/<feature-slug>/session-map.md 的「共通背景」與「S{X}」細節，再依該棒範圍實作。做完跑該棒檢查點，綠燈後勾選對應任務，commit 前先讓我確認。
 > ```
 >
-> **② 審查（實作 commit 後，另開全新視窗）**
+> **② 審查（實作 commit 後，另開全新視窗；第 2 輪以後也用這段）**
 > ```
-> /shan-code-review 先讀 <草稿區>/<feature-slug>/session-map.md 的「共通背景」與「S{X}」細節，再審查 S{X}（任務 N）的實作。
+> /shan-code-review 先讀 <草稿區>/<feature-slug>/session-map.md 的「共通背景」與「S{X}」細節。若 <草稿區>/<feature-slug>/review-S{X}.md 已存在，先讀它——這代表是第 2 輪以後，照 shan-code-review 的「多輪審查」規則走（縮小範圍、只報 🔴、不重報已裁決不修的）。然後審查 S{X}（任務 N）的實作，結束後把本輪寫回 review-S{X}.md。
 > ```
 >
 > **③ 整合版（實作 + 自動冷 context 審查，同一個全新視窗）**
@@ -181,11 +181,14 @@ disable-model-invocation: true
 > 【實作完成後的自動審查流程】
 > 等我確認並完成 S{X} 的 commit 之後：
 > 1. spawn 一個 subagent，冷 context——不要把本視窗的實作對話帶過去。
-> 2. 指示它呼叫 shan-code-review，內容為：「先讀 <草稿區>/<feature-slug>/session-map.md 的「共通背景」與「S{X}」細節，再審查 S{X}（任務 N）。審查基準是 spec 加上本次 commit 的 diff。依 shan-code-review 的格式回報，不要修改任何檔案、不要 commit。」
+> 2. 指示它呼叫 shan-code-review，內容為：「先讀 <草稿區>/<feature-slug>/session-map.md 的「共通背景」與「S{X}」細節；若 <草稿區>/<feature-slug>/review-S{X}.md 已存在也要先讀，並照 shan-code-review 的「多輪審查」規則走。再審查 S{X}（任務 N）。審查基準是 spec 加上本次 commit 的 diff。依 shan-code-review 的格式回報，不要修改任何檔案、不要 commit。」
 > 3. 把它的審查結論「原文完整轉述」給我，不要過濾或淡化。
 > 4. 不要自動改程式碼。先把發現整理成「必須修正 / 建議 / 可忽略」三類並附修正方案，等我確認要改哪幾條再動手。
 > 5. 修正完重跑檢查點，綠燈後做一個獨立的 follow-up commit（一樣先讓我確認）。
+> 6. 把本輪結果寫進 <草稿區>/<feature-slug>/review-S{X}.md（累加不覆蓋），下一輪的乾淨視窗要靠它。
 > ```
+>
+> 需要第 2 輪時，用 ② 另開視窗跑——**不要在同一個視窗連續審**，那個視窗已經是修正的作者了。
 
 ---
 
