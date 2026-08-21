@@ -162,33 +162,21 @@ disable-model-invocation: true
 
 ### 6-2：在畫面輸出開場 prompt
 
-寫完檔案後，**直接在回覆中列出**下列三段供使用者複製（`<feature-slug>` 換成實際名稱，`{X}` / `N` 保留佔位）。①② 是手動雙視窗，③ 是整合版——**擇一使用，不要同時跑**。
+寫完檔案後，**直接在回覆中列出**下列兩段供使用者複製（`<feature-slug>` 換成實際名稱，`{X}` / `N` 保留佔位）。
 
-> **① 實作（每次開全新視窗）**
+> **① 實作（每一棒開一個全新視窗）**
 > ```
-> /shan-implement 先讀 <草稿區>/<feature-slug>/session-map.md 的「共通背景」與「S{X}」細節，再依該棒範圍實作。做完跑該棒檢查點，綠燈後勾選對應任務，commit 前先讓我確認。
+> /shan-implement 先讀 <草稿區>/<feature-slug>/session-map.md 的「共通背景」與「S{X}」細節，再依該棒範圍（任務 N）實作。做完跑該棒檢查點，綠燈後勾選對應任務，commit 前先讓我確認。
 > ```
+> `shan-implement` 會在 commit 之後**自動 spawn 冷 context 的 subagent 跑第一輪審查**，原文轉述結果、等你指定要修哪幾條，並把該輪寫進 `review-S{X}.md`。這一段不用你另外交代。
 >
-> **② 審查（實作 commit 後，另開全新視窗；第 2 輪以後也用這段）**
+> **② 加強版 / 第 2 輪審查（另開全新視窗）**
 > ```
 > /shan-code-review 先讀 <草稿區>/<feature-slug>/session-map.md 的「共通背景」與「S{X}」細節。若 <草稿區>/<feature-slug>/review-S{X}.md 已存在，先讀它——這代表是第 2 輪以後，照 shan-code-review 的「多輪審查」規則走（縮小範圍、只報 🔴、不重報已裁決不修的）。然後審查 S{X}（任務 N）的實作，結束後把本輪寫回 review-S{X}.md。
 > ```
+> 什麼時候需要 ②：**最後一棒、高風險棒次、或第一輪出了 🔴 而你想確認修正沒問題時。** 中間棒次通常自動那輪就夠。
 >
-> **③ 整合版（實作 + 自動冷 context 審查，同一個全新視窗）**
-> ```
-> /shan-implement 先讀 <草稿區>/<feature-slug>/session-map.md 的「共通背景」與「S{X}」細節，再依該棒範圍（任務 N）實作。做完跑該棒檢查點，綠燈後勾選對應任務，commit 前先讓我確認。
->
-> 【實作完成後的自動審查流程】
-> 等我確認並完成 S{X} 的 commit 之後：
-> 1. spawn 一個 subagent，冷 context——不要把本視窗的實作對話帶過去。
-> 2. 指示它呼叫 shan-code-review，內容為：「先讀 <草稿區>/<feature-slug>/session-map.md 的「共通背景」與「S{X}」細節；若 <草稿區>/<feature-slug>/review-S{X}.md 已存在也要先讀，並照 shan-code-review 的「多輪審查」規則走。再審查 S{X}（任務 N）。審查基準是 spec 加上本次 commit 的 diff。依 shan-code-review 的格式回報，不要修改任何檔案、不要 commit。」
-> 3. 把它的審查結論「原文完整轉述」給我，不要過濾或淡化。
-> 4. 不要自動改程式碼。先把發現整理成「必須修正 / 建議 / 可忽略」三類並附修正方案，等我確認要改哪幾條再動手。
-> 5. 修正完重跑檢查點，綠燈後做一個獨立的 follow-up commit（一樣先讓我確認）。
-> 6. 把本輪結果寫進 <草稿區>/<feature-slug>/review-S{X}.md（累加不覆蓋），下一輪的乾淨視窗要靠它。
-> ```
->
-> 需要第 2 輪時，用 ② 另開視窗跑——**不要在同一個視窗連續審**，那個視窗已經是修正的作者了。
+> **MUST NOT 在實作視窗連續審第 2 輪**——走到那一步，那個視窗已經是修正的作者了。
 
 ---
 
@@ -196,13 +184,16 @@ disable-model-invocation: true
 
 **reviewer 不能看過實作過程。** 這跟 `shan-spec-qa` 閘門 4 是同一條原則：作者沿著原本的思路再走一次，抓不到那條思路沒照到的東西。
 
-- 手動模式靠「另開全新視窗」達成
-- 整合版靠「spawn 冷 context 的 subagent」達成
-- **同一視窗直接接著審剛寫的 code 不算**——context 已被污染
+達成方式有兩種，都算數：
 
-**整合版的權衡**：審查結論經由「身為作者的主 session」轉述，已要求原文完整轉述且修正前先由使用者拍板；要最高純度把關，仍可在整合版之外另開視窗再審一次。整合版適合快速回合，手動雙視窗適合最終把關。
+- **spawn 冷 context 的 subagent**——`shan-implement` 的自動第一輪走這條。subagent 不繼承父對話，只拿到它被給的 prompt。
+- **另開全新視窗**——加強版與第 2 輪走這條。
 
-**順序鎖死，一棒一棒來。** 前一棒沒 commit，後面依賴它的驗證會跑不起來。整合版的 subagent 也**必須**在該棒 commit 之後才 spawn——reviewer 比對的是 commit 後的 diff。
+**同一視窗直接接著審剛寫的 code 不算**，context 已被污染。
+
+**自動那輪的權衡**：subagent 本身是冷的，但它的結論要**經由「身為作者的主 session」轉述**。所以 `shan-implement` 明文要求原文完整轉述、且修正前先由使用者拍板。要最高純度的把關，就在自動那輪之外另開視窗再審一次——自動輪適合快速回合，另開視窗適合最終把關。
+
+**順序鎖死，一棒一棒來。** 前一棒沒 commit，後面依賴它的驗證會跑不起來。審查的 subagent 也**必須**在該棒 commit 之後才 spawn——reviewer 比對的是 commit 後的 diff。
 
 **session 地圖不取代 spec。** `shan-code-review` 的真正輸入是 spec 加 diff；地圖只是幫它快速定位該棒範圍與護欄。
 

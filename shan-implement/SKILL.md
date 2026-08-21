@@ -116,8 +116,26 @@ config **H 節**的每一條在實作全程有效。**MUST NOT 重複造輪子**
 
 1. **勾選**任務文件裡對應的項目
 2. **commit 節奏依 config G 節。** config 說要等使用者明確指示，就**停下來提出 commit 訊息草稿並等他點頭**；config 沒有特別規定就一任務一 commit。訊息格式、footer、禁忌全依 config G 節。
-3. **交棒給審查。** **MUST NOT 在這個視窗自己審剛寫完的 code**——context 已經被實作過程污染，你會沿著同一條思路再走一次。照 session 地圖給的模式做：另開乾淨視窗跑 `/shan-code-review`，或 spawn 一個冷 context 的 subagent。沒有 session 地圖就直接告訴使用者要另開視窗審。
+3. **自動跑第一輪審查**（見下）
 4. **報告本棒結束**，並說明下一棒是什麼。
+
+### 自動審查
+
+**MUST NOT 用你自己的 context 審剛寫完的 code**——它已經被實作過程污染，你會沿著同一條思路再走一次，然後替每個選擇找到理由。
+
+改成：**commit 完成之後**，spawn 一個 subagent 跑第一輪審查。
+
+1. **時機**：一定在 commit **之後**。審查者比對的是 commit 後的 diff；還沒 commit 就 spawn，它看到的範圍是錯的。config G 節若要求等使用者點頭才 commit，就等到 commit 真的做完。
+2. **冷 context**：**MUST NOT 把本視窗的實作對話帶進 subagent 的 prompt**。只給它：`shan-code-review` 這支 skill、spec 位置、本棒範圍（session 地圖的 S{X} 段，若有）、diff 的定點、以及 `<草稿區>/<feature-slug>/review-S<X>.md`（若已存在）。
+3. **要求它**：依 `shan-code-review` 的格式回報，**不要修改任何檔案、不要 commit**。
+4. **原文完整轉述**給使用者，**MUST NOT 過濾或淡化**。你是被審的那一方，摘要權在使用者不在你。
+5. **MUST NOT 自動改程式碼。** 把發現整理成「必須修正 / 建議 / 可忽略」三類、各附修正方案，等使用者指定要改哪幾條再動手。
+6. 改完重跑驗證閘門，綠燈後做一個**獨立的 follow-up commit**（節奏一樣依 config G 節）。獨立 commit 是為了讓下一輪審查的範圍界定得清楚。
+7. 把本輪結果寫進 `<草稿區>/<feature-slug>/review-S<X>.md`（累加不覆蓋）。
+
+**需要第 2 輪時，告訴使用者另開乾淨視窗跑 `/shan-code-review`——MUST NOT 在這個視窗連續審。** 走到這一步，你已經是那些修正的作者了，再審一次就回到自己審自己。
+
+**加強版審查**：最後一棒、高風險棒次，或這一輪出了 🔴 時，建議使用者在自動這輪之外，另開視窗再跑一次手動審查當最終把關。
 
 ---
 
