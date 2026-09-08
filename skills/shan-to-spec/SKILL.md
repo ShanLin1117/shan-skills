@@ -14,11 +14,12 @@ disable-model-invocation: true
 
 ## Step 1：載入
 
-1. **`.shan/config.md`** —— 缺就告訴使用者跑 `/shan-setup`
+1. **`.shan/config.md`** —— 缺就告訴使用者跑 `/shan-skills:shan-setup`；首行不是 `<!-- shan-config: v2 -->` 就提示一次「config 是舊版」，以現有內容繼續
 2. **格式契約** —— config **A 節**指向的那份。**標題、必要章節、驗收條件句式、生成標頭一律以它為準**，本 skill 不重述任何模板
 3. **決策來源** —— `<草稿區>/<feature-slug>/grill.md`。沒有這個檔就從當前對話綜合，並在交付時說明「本次沒有 grill 記錄，決策來自對話」
-4. **專案脈絡** —— 依 config **B 節**的順序讀。詞彙用 config B 節指定的來源，不要自創同義詞
-5. **Codebase** —— 探索要動到的區域。事實查核走 config **C 節**，不憑記憶斷言任何 class / 欄位 / 設定鍵存在
+4. **跨棒事實** —— `<草稿區>/<feature-slug>/findings.md`（若存在；格式見 `${CLAUDE_SKILL_DIR}/../../docs/scratch-contract.md`，下稱**草稿區契約**）。這是前一輪實作查證出來、spec 該吸收的事實，例如「DB 會正規化 JSON 鍵序」這種會改變驗收條件寫法的東西
+5. **專案脈絡** —— 依 config **B 節**的順序讀：「每棒必讀」全讀，「依主題選讀」挑相關的。詞彙用 config B 節指定的來源，不要自創同義詞
+6. **Codebase** —— 探索要動到的區域。事實查核走 config **C 節**，不憑記憶斷言任何 class / 欄位 / 設定鍵存在
 
 ### 份數與檔名由格式契約決定
 
@@ -99,20 +100,21 @@ Step 4–6 是三個**角色**，不是三個固定檔名：
 - 每個驗收條件**至少被一個任務涵蓋**——沒有孤兒需求
 - 任務大小以「一個乾淨的 context window 做得完」為上限
 
-**大範圍機械式重構是切法的例外。** 一次改名、一次換型別，爆炸半徑遍及整個 codebase，沒有任何一刀能單獨綠燈。不要硬塞進正常切法，改用 **expand–contract**：先 expand（新舊並存，什麼都不壞）→ 分批遷移呼叫點（每批一個任務、都被 expand 擋住、批批綠燈）→ 最後 contract（沒有呼叫者了才刪舊的，被每一批遷移擋住）。
+**大範圍機械式重構是切法的例外。** 一次改名、一次換型別，爆炸半徑遍及整個 codebase，沒有任何一刀能單獨綠燈。不要硬塞進正常切法，改用 **expand–contract**：先 expand（新舊並存，什麼都不壞）→ 分批遷移呼叫點（每批一個任務、都被 expand 擋住、批批綠燈）→ 最後 contract（沒有呼叫者了才刪舊的，被每一批遷移擋住）。expand–contract 的任務清單**必須以一個 integrate-and-verify 任務收尾**：確認沒有殘留的舊呼叫點、完整驗證綠燈。
 
 ---
 
 ## Step 7：交付
 
-產出寫進 `<草稿區>/<feature-slug>/spec-draft/`，然後：
+產出寫進 `<草稿區>/<feature-slug>/spec-draft/`（整目錄覆寫，見草稿區契約），然後：
 
 1. 列出產出的檔案與各自的規模（幾條需求、幾個決策、幾個任務）
 2. 摘要 Step 3 議定的 seam
 3. 點出你在綜合過程中**自行補的假設**（grill.md 沒講、你依 codebase 現況推斷的），逐條列出來讓使用者複核
-4. 告訴使用者下一步：跑 `/shan-spec-qa` 品保，通過後再由**他自己**把產出搬進 config A 節的 spec 目錄
+4. 若吸收了 `findings.md` 的事實，列出哪幾條被寫進了哪些驗收條件
+5. 告訴使用者下一步：跑 `/shan-skills:shan-spec-qa` 品保，通過後再由**他自己**把產出搬進 config A 節的 spec 目錄
 
-**MUST NOT 直接寫入 spec 目錄。** 那道搬遷動作是人工核可閘門（config A 節）。
+**MUST NOT 直接寫入 spec 目錄。** 那道搬遷動作是人工核可閘門（config A 節），hook 也會擋。
 
 ---
 
