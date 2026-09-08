@@ -1,0 +1,29 @@
+# .shan/guard.yaml — shan-skills harness 層讀的機器可讀護欄
+# 由 shan-setup 產生，進版控。人讀的說明在 .shan/config.md 的 A 節與 H 節。
+#
+# 解析器是 bash + sed，格式刻意簡單：
+#   - 清單項目一行一個，前面兩個空白加 "- "
+#   - 布林值只認 true / false
+#   - 不支援巢狀超過兩層、不支援多行字串
+#
+# 暫時停用整份護欄：啟動 Claude Code 前設環境變數 SHAN_GUARD_OFF=1
+
+version: 2
+
+# PreToolUse 對 Edit / Write / NotebookEdit 的檢查。
+# 路徑以專案根為基準，glob 中的 * 與 ** 都會跨越 /。
+# allowed_paths 優先於 protected_paths——用來替受保護目錄下的少數可寫檔開洞（例如 tasks.md 的勾選）。
+protected_paths:
+  - "<例：.kiro/specs/**/*.md>"
+  - "<例：.kiro/steering/**>"
+  - "<例：src/main/resources/db/migration/V*.sql>"
+allowed_paths:
+  - "<例：.kiro/specs/**/tasks.md>"
+
+# PreToolUse 對 Bash 的檢查，只看含 git 的指令。
+git:
+  default_branch: "<例：master>"
+  deny_commit_on_default_branch: true   # 在 default_branch 上執行 git commit 即拒絕
+  deny_amend: true                      # git commit --amend
+  deny_no_verify: true                  # --no-verify
+  deny_force_push: true                 # push --force / -f / --force-with-lease
