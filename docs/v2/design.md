@@ -211,6 +211,7 @@ git:
 - **為什麼 `background: false`**：背景 subagent 會被拿掉 `Agent` 工具，無法 spawn 兩軸；而且呼叫端要等結果
 - **放棄了什麼**：讓 `shan-implement` 自己平行 spawn 兩軸再彙整。彙整會落在作者的 context 裡，正是 v1 要避免的
 - **保留的人工選項**：手動另開視窗跑 `/shan-code-review` 仍然成立，行為完全相同。「加強版審查」不再是不同機制，只是不同時機
+- **驗證輪修正（2026-09-08，S10）**：`disable-model-invocation: true` 會禁止模型的**一切**呼叫，不只是自動觸發，`shan-implement` 因此無法呼叫審查 skill。`shan-code-review` 移除該旗標，改以 description 明寫「只在自動輪或使用者明確呼叫時使用」防誤觸發；其餘六支維持旗標
 
 ### D3 — 草稿區契約成為一等文件
 

@@ -38,7 +38,7 @@ shan-code-review  fork 的乾淨 context ─→ 規範軸 ∥ 意圖軸，並排
 | `shan-implement` | 議定 seam → 紅綠迴圈 → 驗證閘門 → 收尾交棒 → 自動審查。只做被指派的那一棒 | 動工一棒 |
 | `shan-code-review` | 在 fork 出來的乾淨 context 平行 spawn 兩軸審查 agent，並排回報、不跨軸重排、**只回報不動手** | 一棒 commit 之後（自動），或另開視窗做第 2 輪／最終把關 |
 
-所有 skill 都掛 `disable-model-invocation: true`——**只能手動叫**，不會自動觸發。呼叫名是 `/shan-skills:shan-grill`，短別名 `/shan-grill` 在沒有同名 skill 時也能用。
+除了 `shan-code-review`，其餘六支都掛 `disable-model-invocation: true`——**只能手動叫**，不會自動觸發。`shan-code-review` 不能掛這個旗標，因為它擋的是「模型的一切呼叫」而不只是自動觸發，掛了 `shan-implement` 就無法在 commit 後呼叫它；改以 description 明寫「只在自動輪或使用者明確呼叫時使用」來防誤觸發。呼叫名是 `/shan-skills:shan-grill`，短別名 `/shan-grill` 在沒有同名 skill 時也能用。
 
 ## 四層架構
 

@@ -1,7 +1,6 @@
 ---
 name: shan-code-review
-description: 審查一段異動的雙軸 code review——規範軸（是否符合專案慣例與設計品味）與意圖軸（是否忠實實作了 spec 或該次改動的意圖），兩軸以平行 subagent 執行後並排回報。在 fork 出來的乾淨 context 執行，自己不改檔案、只回報。當使用者說「審查」「code review」「幫我看這個 diff / branch / PR」「review S1」「shan-code-review」時使用。有 spec 就對照 spec，沒有就對照改動意圖。實作用 shan-implement，審 spec 文件本身用 shan-spec-qa。
-disable-model-invocation: true
+description: 審查一段異動的雙軸 code review——規範軸（是否符合專案慣例與設計品味）與意圖軸（是否忠實實作了 spec 或該次改動的意圖），兩軸以平行 subagent 執行後並排回報。在 fork 出來的乾淨 context 執行，自己不改檔案、只回報。只在兩種情況使用：shan-implement 於 commit 後以 Skill 工具呼叫的自動輪，或使用者明確輸入 /shan-skills:shan-code-review。對話裡提到「審查」「review」「幫我看 diff」不算明確呼叫，不要自行選用。有 spec 就對照 spec，沒有就對照改動意圖。實作用 shan-implement，審 spec 文件本身用 shan-spec-qa。
 context: fork
 background: false
 argument-hint: "[feature-slug] [S{X}] [定點 ref]"
