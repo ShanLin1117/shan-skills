@@ -125,11 +125,13 @@ Spec 任務: 任務 1.3（S2）
 - YYYY-MM-DD：<誰、說了什麼>
 ```
 
-狀態語意：
+狀態字串：**config A 節若指向專案自己的 triage 標籤檔，以那份為準**；沒有就用下面三種：
 
 - `open`：發現了，還沒整理成可裁決的形式
 - `ready-for-human`：兩案併陳完成，等使用者拍板
 - `resolved`：使用者裁決並落地（spec 已改，或明確決定不改）。在 `## Comments` 記錄裁決
+
+不論哪一套，skill 讀票時把「非 `resolved`」一律視為未結。
 
 ## `review-S<X>.md`
 
