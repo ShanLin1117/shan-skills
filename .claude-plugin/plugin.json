@@ -1,0 +1,5 @@
+{
+  "name": "shan-skills",
+  "description": "AI 開發工作流：grill → spec → spec-qa → plan → implement → code-review，skill 零專案知識，專案事實住在 .shan/config.md",
+  "version": "2.0.0-dev"
+}
