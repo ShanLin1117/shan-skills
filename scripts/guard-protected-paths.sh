@@ -38,4 +38,14 @@ while IFS= read -r p; do
   fi
 done < <(yaml_list "$GUARD" protected_paths)
 
+# 只保護「已存在」的檔：新增同型檔（例如新的 migration 版號）放行
+ABS="$FILE"
+case "$ABS" in /*|[A-Za-z]:/*) ;; *) ABS="$ROOT/$FILE" ;; esac
+while IFS= read -r p; do
+  [ -z "$p" ] && continue
+  if matches "$p" && [ -e "$ABS" ]; then
+    deny "shan-guard：\`$REL\` 是已存在的受保護檔（\`$p\`，.shan/guard.yaml 的 protected_existing_paths）。已套用的 migration 或已核可的文件不得修改，一律新增前向版本。若是使用者明確要求，請使用者暫時調整 guard.yaml 或以 SHAN_GUARD_OFF=1 啟動。"
+  fi
+done < <(yaml_list "$GUARD" protected_existing_paths)
+
 exit 0

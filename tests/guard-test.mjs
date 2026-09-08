@@ -17,9 +17,10 @@ const GUARD = `version: 2
 protected_paths:
   - ".kiro/specs/**/*.md"
   - ".kiro/steering/**"
-  - "src/main/resources/db/migration/V*.sql"
 allowed_paths:
   - ".kiro/specs/**/tasks.md"
+protected_existing_paths:
+  - "src/main/resources/db/migration/V*.sql"
 git:
   default_branch: "master"
   deny_commit_on_default_branch: true   # 註解
@@ -50,7 +51,11 @@ run("spec requirements 拒絕（Windows 絕對路徑）", "deny", P, W("\\.kiro\
 run("spec design 拒絕（相對路徑）", "deny", P, { tool_name: "Edit", tool_input: { file_path: ".kiro/specs/foo/design.md" } });
 run("spec tasks.md 放行（allowed_paths）", "allow", P, W("\\.kiro\\specs\\foo\\tasks.md"));
 run("一般原始碼放行", "allow", P, W("\\src\\main\\java\\X.java"));
-run("migration 拒絕", "deny", P, W("\\src\\main\\resources\\db\\migration\\V20__x.sql"));
+mkdirSync(path.join(SB, "src/main/resources/db/migration"), { recursive: true });
+writeFileSync(path.join(SB, "src/main/resources/db/migration/V19__old.sql"), "-- applied");
+run("已存在的 migration 拒絕（protected_existing_paths）", "deny", P, W("\\src\\main\\resources\\db\\migration\\V19__old.sql"));
+run("新增的 migration 放行（檔案不存在）", "allow", P, W("\\src\\main\\resources\\db\\migration\\V20__x.sql"));
+run("已存在的 migration 以相對路徑仍拒絕", "deny", P, { tool_name: "Edit", tool_input: { file_path: "src/main/resources/db/migration/V19__old.sql" } });
 run("steering 子目錄拒絕", "deny", P, W("\\.kiro\\steering\\a\\b.md"));
 run("content 內含假 file_path 不誤判", "allow", P, { tool_name: "Write", tool_input: { content: 'see "file_path":".kiro/specs/foo/design.md" here', file_path: path.join(SBW, "README.md") } });
 run("大小寫不同仍拒絕", "deny", P, W("\\.Kiro\\Specs\\foo\\Design.md"));

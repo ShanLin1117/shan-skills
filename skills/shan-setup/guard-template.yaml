@@ -14,11 +14,15 @@ version: 2
 # 路徑以專案根為基準，glob 中的 * 與 ** 都會跨越 /。
 # allowed_paths 優先於 protected_paths——用來替受保護目錄下的少數可寫檔開洞（例如 tasks.md 的勾選）。
 protected_paths:
-  - "<例：.kiro/specs/**/*.md>"
+  - "<例：.kiro/specs/**/requirements.md>"
+  - "<例：.kiro/specs/**/design.md>"
   - "<例：.kiro/steering/**>"
-  - "<例：src/main/resources/db/migration/V*.sql>"
 allowed_paths:
   - "<例：.kiro/specs/**/tasks.md>"
+
+# 檔案「已存在」才拒絕；新增同型檔放行。用於已套用的 migration 這類「只能加新版、不能改舊版」的東西。
+protected_existing_paths:
+  - "<例：src/main/resources/db/migration/V*.sql>"
 
 # PreToolUse 對 Bash 的檢查，只看含 git 的指令。
 git:
