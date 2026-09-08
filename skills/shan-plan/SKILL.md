@@ -18,10 +18,15 @@ disable-model-invocation: true
 
 ## Step 1：載入
 
-1. **`.shan/config.md`** —— 缺就告訴使用者跑 `/shan-setup`
-2. **spec 全部文件** —— 位置見 config **A 節**。**三個角色都要讀完**：需求（風險評估的來源）、設計（分層的主要依據）、任務（切割的對象）。只看任務清單會切錯。
+1. **`.shan/config.md`** —— 缺就告訴使用者跑 `/shan-skills:shan-setup`；首行不是 `<!-- shan-config: v2 -->` 就提示一次「config 是舊版」，以現有內容繼續
+2. **spec 全部文件** —— 位置見 config **A 節**。**三個角色都要讀完**：需求（風險評估的來源）、設計（分層的主要依據）、任務（切割的對象）。只看任務清單會切錯
 3. **既有的依賴圖** —— spec 的依賴圖章節就是阻塞邊，不要自己重新推導一份
-4. **config D / E / F / H 節** —— 建置指令、測試慣例、切法、硬護欄
+4. **草稿區的既有檔**（格式見 `${CLAUDE_SKILL_DIR}/../../docs/scratch-contract.md`，下稱**草稿區契約**）：
+   - `qa-report.md` —— 未解決的開放決策會影響切法
+   - `findings.md` —— 前置盤點與跨棒事實；某些棒次的風險標記來自這裡
+   - `issues/` 中 `Status` 非 `resolved` 的票 —— 被票擋住的任務要標出來
+   - `session-map.md` 已存在時，**先讀它的 `## 修訂記錄`**，這次是更新而不是重切；已完成的棒次原樣保留
+5. **config D / E / F / H 節** —— 建置指令、測試慣例、切法、硬護欄
 
 跳過已完成的任務，只對未完成的做計畫。
 
@@ -101,7 +106,7 @@ disable-model-invocation: true
 - **遺漏測試任務**（有驗收條件但沒有對應的測試任務）→ 提醒
 - **不可逆變更與其他層混在同一任務** → 建議獨立
 
-問題若屬結構性，建議使用者回 `/shan-spec-qa` 補正再回來排計畫。**MUST NOT 為了讓計畫好切而修改 spec。**
+問題若屬結構性，建議使用者回 `/shan-skills:shan-spec-qa` 補正再回來排計畫。非結構性的小問題（編號筆誤、設定鍵命名不一致）寫進地圖的「已知的 spec 小問題」節，讓開工的人留意。**MUST NOT 為了讓計畫好切而修改 spec。**
 
 ---
 
@@ -125,15 +130,16 @@ disable-model-invocation: true
 
 路徑：`<草稿區>/<feature-slug>/session-map.md`（草稿區見 config A 節）。
 
-**放草稿區而不是 spec 目錄**——它是規劃輔助檔，不是 spec 內容，也不該被 spec 的修改禁令綁住。寫檔前先確認同名檔不存在；已存在就更新，不要盲目覆寫。**不要 commit**，由使用者決定是否納入版控。
+**放草稿區而不是 spec 目錄**——它是規劃輔助檔，不是 spec 內容，也不該被 spec 的修改禁令綁住。已存在就更新主體並在 `## 修訂記錄` 追加一行說明這次重排了什麼，不要盲目覆寫。**不要 commit**，由使用者決定是否納入版控。
 
-固定兩大區——讓每一棒讀這一個檔就自足：
+固定三大區——讓每一棒讀這一個檔就自足：
 
 ```markdown
 # Session Map — <feature-slug>
 
 > 這是開發計畫，**不是 spec 內容**。spec 才是權威來源。
 > 用途：每次新開 impl / review 視窗時當固定抬頭讀入。
+> 產出日期：YYYY-MM-DD。切法依 config F 節。
 
 ## 一、共通背景（每棒共用）
 
@@ -141,23 +147,35 @@ disable-model-invocation: true
 <在整體 roadmap 的位置、會動到哪些既有流程、相容性要求>
 
 ### Session 切割地圖
-<表格：S1..Sn → 範圍 / 對應任務編號 / 前沿或阻塞關係 / 備註。高風險與需要外部服務的棒次要標出來>
+<表格：S1..Sn → 範圍 / 對應任務編號 / 前沿或阻塞關係 / 備註。高風險、需要外部服務、被 issues/ 擋住的棒次要標出來>
 <紀律：做完綠燈 + commit 再開下一棒>
 
 ### 跨 session 硬性護欄（全程適用）
 <從 config H 節與本 spec 抽出「每一棒都適用」的護欄，逐條列出>
 
 ### 每棒開場固定動作
-<確認上一棒已 commit → 從第一個未完成子任務開始 → 收尾勾選任務 + 跑檢查點 + 依 config G 節的節奏處理 commit>
+1. 確認上一棒已 commit（`git status` 乾淨）
+2. 確認在正確分支上
+3. 讀本檔的共通背景 + 自己那一棒的細節 + `## 修訂記錄`
+4. 讀 `findings.md` 全文與 `issues/` 中未 resolved 的票
+5. 從該棒第一個未完成子任務開始
+6. 收尾：勾選任務 → 跑檢查點 → 依 config G 節處理 commit → 自動審查 → 寫交接檔
 
 ### 建置與驗證指令
 <照抄 config D 節>
 
+### 已知的 spec 小問題
+<開工時留意、但不需回 spec-qa 的項目；沒有就寫「無」>
+
 ## 二、各 Session 細節（只看自己負責那一棒）
 
 ### S1 — <名稱>
-- 任務編號 / 層級 / 要讀的設計章節 / 預計異動範圍 / 風險 / 檢查點
+- 任務編號 / 層級 / 要讀的設計章節 / 預計異動範圍 / 風險 / 關鍵陷阱 / 檢查點
 ### S2 — ...
+
+## 修訂記錄
+
+- YYYY-MM-DD · shan-plan 初版 · —
 ```
 
 ### 6-2：在畫面輸出開場 prompt
@@ -166,14 +184,16 @@ disable-model-invocation: true
 
 > **① 實作（每一棒開一個全新視窗）**
 > ```
-> /shan-implement 先讀 <草稿區>/<feature-slug>/session-map.md 的「共通背景」與「S{X}」細節，再依該棒範圍（任務 N）實作。做完跑該棒檢查點，綠燈後勾選對應任務，commit 前先讓我確認。
+> /shan-skills:shan-implement 先讀 <草稿區>/<feature-slug>/session-map.md 的「共通背景」「S{X}」細節與「修訂記錄」，再讀同目錄的 findings.md 與 issues/ 中未 resolved 的票，然後依該棒範圍（任務 N）實作。做完跑該棒檢查點，綠燈後勾選對應任務，commit 前先讓我確認。
 > ```
-> `shan-implement` 會在 commit 之後**自動 spawn 冷 context 的 subagent 跑第一輪審查**，原文轉述結果、等你指定要修哪幾條，並把該輪寫進 `review-S{X}.md`。這一段不用你另外交代。
+> `shan-implement` 會在 commit 之後**自動呼叫 fork 的 `shan-code-review`**（乾淨 context、兩軸平行），原文轉述結果、等你指定要修哪幾條，並依草稿區契約寫 `review-S{X}.md`。這一段不用你另外交代。
 >
-> **② 加強版 / 第 2 輪審查（另開全新視窗）**
+> **② 第 2 輪審查或最終把關（另開全新視窗）**
 > ```
-> /shan-code-review 先讀 <草稿區>/<feature-slug>/session-map.md 的「共通背景」與「S{X}」細節。若 <草稿區>/<feature-slug>/review-S{X}.md 已存在，先讀它——這代表是第 2 輪以後，照 shan-code-review 的「多輪審查」規則走（縮小範圍、只報 🔴、不重報已裁決不修的）。然後審查 S{X}（任務 N）的實作，結束後把本輪寫回 review-S{X}.md。
+> /shan-skills:shan-code-review <feature-slug> S{X} <上一輪的修正 commit>
 > ```
+> 它會自己讀 `review-S{X}.md` 判定是第幾輪、照「多輪審查」規則縮小範圍、只報 🔴。報告末尾的「呼叫端待辦」告訴那個視窗接下來要做什麼。
+>
 > 什麼時候需要 ②：**最後一棒、高風險棒次、或第一輪出了 🔴 而你想確認修正沒問題時。** 中間棒次通常自動那輪就夠。
 >
 > **MUST NOT 在實作視窗連續審第 2 輪**——走到那一步，那個視窗已經是修正的作者了。
@@ -184,16 +204,13 @@ disable-model-invocation: true
 
 **reviewer 不能看過實作過程。** 這跟 `shan-spec-qa` 閘門 4 是同一條原則：作者沿著原本的思路再走一次，抓不到那條思路沒照到的東西。
 
-達成方式有兩種，都算數：
+v2 把這件事做成機制：`shan-code-review` 宣告 `context: fork`，**不論從哪裡呼叫**，它都在一個看不到呼叫端對話的 subagent 裡執行，並自己平行 spawn 兩軸。所以：
 
-- **spawn 冷 context 的 subagent**——`shan-implement` 的自動第一輪走這條。subagent 不繼承父對話，只拿到它被給的 prompt。
-- **另開全新視窗**——加強版與第 2 輪走這條。
+- 自動輪（`shan-implement` 呼叫）與手動輪（使用者另開視窗呼叫）跑的是**同一套機制**，差別只在呼叫端是不是作者
+- 自動輪的呼叫端是作者，它拿到報告後只能**原文轉述、等使用者裁決**；手動輪的呼叫端是乾淨視窗，可以直接依裁決修
+- 第 2 輪一定要另開視窗，因為自動輪的呼叫端已經是修正的作者
 
-**同一視窗直接接著審剛寫的 code 不算**，context 已被污染。
-
-**自動那輪的權衡**：subagent 本身是冷的，但它的結論要**經由「身為作者的主 session」轉述**。所以 `shan-implement` 明文要求原文完整轉述、且修正前先由使用者拍板。要最高純度的把關，就在自動那輪之外另開視窗再審一次——自動輪適合快速回合，另開視窗適合最終把關。
-
-**順序鎖死，一棒一棒來。** 前一棒沒 commit，後面依賴它的驗證會跑不起來。審查的 subagent 也**必須**在該棒 commit 之後才 spawn——reviewer 比對的是 commit 後的 diff。
+**順序鎖死，一棒一棒來。** 前一棒沒 commit，後面依賴它的驗證會跑不起來。審查也**必須**在該棒 commit 之後——reviewer 比對的是 commit 後的 diff。
 
 **session 地圖不取代 spec。** `shan-code-review` 的真正輸入是 spec 加 diff；地圖只是幫它快速定位該棒範圍與護欄。
 
@@ -202,5 +219,5 @@ disable-model-invocation: true
 ## 邊界
 
 - **只做規劃，不寫程式碼。** 實作交給 `shan-implement`。
-- **MUST NOT 修改 spec 文件。** 發現 spec 問題就告知使用者。唯一產出是草稿區的 session 地圖。
+- **MUST NOT 修改 spec 文件。** 發現 spec 問題就告知使用者，結構性的建議回 `shan-spec-qa`。唯一產出是草稿區的 session 地圖。
 - **不做 commit。** 計畫與地圖是給使用者的工作地圖，由他決定要不要納入版控。
