@@ -154,12 +154,11 @@ disable-model-invocation: true
 <從 config H 節與本 spec 抽出「每一棒都適用」的護欄，逐條列出>
 
 ### 每棒開場固定動作
-1. 確認上一棒已 commit（`git status` 乾淨）
-2. 確認在正確分支上
-3. 讀本檔的共通背景 + 自己那一棒的細節 + `## 修訂記錄`
-4. 讀 `findings.md` 全文與 `issues/` 中未 resolved 的票
-5. 從該棒第一個未完成子任務開始
-6. 收尾：勾選任務 → 跑檢查點 → 依 config G 節處理 commit → 自動審查 → 寫交接檔
+**流程步驟一律依 shan-implement skill；本檔與 skill 衝突時以 skill 為準。** 這裡只記專案專屬的事：
+- 分支名；上一棒必須已 commit
+- 必讀清單：config B 節「每棒必讀」、本檔共通背景 + 本棒細節 + 修訂記錄、`findings.md`、未 resolved 的票
+- 自動審查的呼叫參數：`<feature-slug> S{X} <本棒起點 commit>`；修正的 commit 政策（照抄 config G 節）
+- 第 2 輪：另開視窗 `/shan-skills:shan-code-review <feature-slug> S{X} <修正 commit>`
 
 ### 建置與驗證指令
 <照抄 config D 節>

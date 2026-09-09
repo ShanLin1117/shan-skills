@@ -87,7 +87,7 @@ hook 腳本以 bash 執行；Windows 需要 Git Bash（Claude Code 本身就要�
 2. **config 是 cache，不是抄本。** 只記查不到、或查起來貴的東西；一個指令查得到的當下狀態寫成查詢方式，不寫答案。
 3. **格式契約住在專案裡，config 只指路。** 契約跟著 repo 走，不跟著 skill 走。
 4. **事實是 agent 的工作，決策是人的工作。** 能查的一律自己查；該裁決的一律送到人面前等。
-5. **審查者的 context 必須乾淨，而且是機制不是紀律。** `shan-code-review` 以 `context: fork` 執行，不論從哪裡呼叫都看不到呼叫端的對話；兩軸各一個 agent 平行跑。審查者只回報，修正由呼叫端在使用者裁決後執行。
+5. **審查者的 context 必須乾淨，而且是機制不是紀律。** `shan-code-review` 以 `context: fork` 執行，不論從哪裡呼叫都看不到呼叫端的對話；兩軸各一個 agent 平行跑。審查者只回報；呼叫端對 🔴 逐條查證成立就修，🟡 等使用者裁決，修正在提請 follow-up commit 時攤開。
 6. **「絕不該做」的事由 hook 擋，不由 prose 擋。** 寫入已核可的 spec、amend、force push、在預設分支 commit——這些不靠模型記得，靠 `PreToolUse` 拒絕。需要判斷的事（未經同意不 commit）仍留在 prose。
 7. **跨 session 的狀態只走草稿區契約。** `findings.md`、`issues/`、`review-S<X>.md`、地圖的修訂記錄——每個檔誰產、誰讀、追加還是覆寫，都有明文。skill 不各自發明檔案。
 8. **寫入 spec 目錄前一定經過人工核可。** skill 先寫草稿，你核可後才進正式位置。
