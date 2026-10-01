@@ -155,7 +155,7 @@ disable-model-invocation: true
 
 ### 每棒開場固定動作
 **流程步驟一律依 shan-implement skill；本檔與 skill 衝突時以 skill 為準。** 這裡只記專案專屬的事：
-- 分支名；上一棒必須已 commit
+- 分支名；上一棒必須已 commit，且前面每一棒都有 `review-S<X>.md`（缺的停下來問，見草稿區契約的不變量）
 - 必讀清單：config B 節「每棒必讀」、本檔共通背景 + 本棒細節 + 修訂記錄、`findings.md`、未 resolved 的票
 - 自動審查的呼叫參數：`<feature-slug> S{X} <本棒起點 commit>`；修正的 commit 政策（照抄 config G 節）
 - 第 2 輪：另開視窗 `/shan-skills:shan-code-review <feature-slug> S{X} <修正 commit>`
