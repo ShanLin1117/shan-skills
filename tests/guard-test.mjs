@@ -9,6 +9,11 @@ const REPO = path.resolve(path.dirname(new URL(import.meta.url).pathname.replace
 const SB = path.join(os.tmpdir(), `shan-guard-sandbox-${process.pid}`);
 const SBW = SB.replace(/\//g, "\\");
 
+// 收尾清理註冊在 exit 上，不是直線語句：測試紅燈或中途 throw 時照樣清得掉。
+// 帶 PID 之後 PID 不重複，開頭的 rmSync 已不再有「清掉上次殘留」的作用，
+// 沒有這道就會每跑一次失敗的測試就在 temp 永久留一個沙盒。
+process.on("exit", () => rmSync(SB, { recursive: true, force: true }));
+
 rmSync(SB, { recursive: true, force: true });
 mkdirSync(path.join(SB, ".shan"), { recursive: true });
 const git = (...a) => spawnSync("git", ["-C", SB, ...a], { encoding: "utf8" });
@@ -83,6 +88,5 @@ renameSync(guardPath + ".bak", guardPath);
 run("壞 JSON 放行", "allow", G, "not json at all");
 run("空輸入放行", "allow", P, "");
 
-rmSync(SB, { recursive: true, force: true }); // 沙盒帶 PID，跑完自己收掉，不要在 temp 累積
 console.log(fails === 0 ? "\n全部通過" : `\n失敗 ${fails} 項`);
 process.exit(fails === 0 ? 0 : 1);
