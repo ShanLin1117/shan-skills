@@ -4,7 +4,7 @@
 
 大多數 AI coding skill 都會長進專案裡：寫死框架版本、目錄路徑、測試基底類別、commit 慣例。換一個專案就得整套重寫。**這套的做法相反——skill 本體一個專案字眼都沒有，所有 repo 專屬的事實住在該 repo 的 `.shan/config.md`。** 同一套 skill 因此可以跨專案帶著走，而每個專案仍然拿到符合自己慣例的行為。
 
-v2 在此之上加了兩層：**草稿區契約**（跨 session 的狀態怎麼交接）與 **harness 層**（護欄由 hook 擋，不靠提示詞）。
+2026 年 9 月的改版在此之上加了兩層：**草稿區契約**（跨 session 的狀態怎麼交接）與 **harness 層**（護欄由 hook 擋，不靠提示詞）。
 
 ## 工作流
 
@@ -94,12 +94,12 @@ hook 腳本以 bash 執行；Windows 需要 Git Bash（Claude Code 本身就要�
 
 ## 實跑記錄
 
-| 版本 | 專案 | 規模 | 結果 |
+| 階段 | 專案 | 規模 | 結果 |
 |---|---|---|---|
-| v1 | 一個 Java / Spring Boot 客戶專案（內網 GitLab，Kiro spec） | 一份 spec 16 棒走完；另一份 47 個任務切 28 棒，跑到 S9 | 骨架與審查紀律有效；暴露十條偏差，整理於 [docs/v2/design.md](./docs/v2/design.md) 的「實跑證據」 |
-| v2 | 同一專案 | 接續 S10–S12 當驗證輪 | 進行中；通過條件見設計文件的 Testing Strategy |
+| 改版前 | 一個 Java / Spring Boot 客戶專案（內網 GitLab，Kiro spec） | 一份 spec 16 棒走完；另一份 47 個任務切 28 棒，跑到 S9 | 骨架與審查紀律有效；暴露十條偏差，整理於 [docs/redesign-2026-09.md](./docs/redesign-2026-09.md) 的「實跑證據」 |
+| 改版後 | 同一專案 | 同一份 spec 接續跑完 S10–S27 加一份全案把關 | 十一條評測案例逐條回溯驗過，結果見 [evals/cases.md](./evals/cases.md) |
 
-v1 到 v2 的差異、每條決策的取捨與放棄的替代案，都在 [docs/v2/design.md](./docs/v2/design.md)。
+改版前後的差異、每條決策的取捨與放棄的替代案，都在 [docs/redesign-2026-09.md](./docs/redesign-2026-09.md)。
 
 ## 測試
 
@@ -121,6 +121,6 @@ hooks/hooks.json                PreToolUse 註冊
 scripts/                        guard-protected-paths.sh、guard-git.sh、lib.sh
 tests/guard-test.mjs            harness 層測試
 docs/scratch-contract.md        草稿區契約
-docs/v2/design.md               v2 設計文件
+docs/redesign-2026-09.md        2026 年 9 月改版的設計文件
 evals/cases.md                  skill 層的評測案例
 ```

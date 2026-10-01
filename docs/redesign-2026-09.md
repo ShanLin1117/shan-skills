@@ -103,7 +103,7 @@ shan-skills/
 │   └── guard-git.sh
 ├── docs/
 │   ├── scratch-contract.md      ← 草稿區契約（skill 與使用者共同的參考）
-│   └── v2/design.md             ← 本檔
+│   └── redesign-2026-09.md      ← 本檔
 ├── evals/cases.md
 ├── README.md
 └── WORKFLOW.md
@@ -316,7 +316,13 @@ v2 寫完後，用 nec 的 **S10、S11、S12** 三棒當驗證輪。S10 與 S11 
 
 ## 遷移步驟
 
-1. ~~打 `v1` tag~~（已完成）
+> **後記（2026-10-01）**：第 1 步與第 9 步的 tag 已經作廢。這個 repo **不發版本、不打 release tag**——
+> junction 指向工作樹，repo 裡是什麼就是什麼，tag 不 gate 任何東西；當初打的 `v1` 從未推上遠端，
+> 九個月沒起過作用，已刪除。改動就 commit。唯一還帶版本號的是 `<!-- shan-config: v2 -->`，
+> 那是 config 的**格式版本**（skill 用它判斷章節結構），與發布無關，說明見 `config-template.md`。
+> 本檔其餘的 v1／v2 字樣是這次改版的前後對照，屬歷史敘述，保留。
+
+1. ~~打 `v1` tag~~（已作廢，見上）
 2. 本設計文件經使用者核可
 3. 重整 repo 結構為 plugin 佈局（搬檔案，內容不動），重建 junction，確認七支 skill 仍可呼叫，確認呼叫名是否需前綴
 4. 寫 `docs/scratch-contract.md`、`guard-template.yaml`、兩個 agent、兩支 hook 腳本、`hooks.json`
@@ -324,7 +330,7 @@ v2 寫完後，用 nec 的 **S10、S11、S12** 三棒當驗證輪。S10 與 S11 
 6. 重寫 README、WORKFLOW，寫 `evals/cases.md`
 7. nec 一致性核對（見 Testing Strategy）
 8. 跑 S10–S12 驗證輪，逐條對照通過條件
-9. 通過後打 `v2` tag；未通過的項目回到步驟 5
+9. ~~通過後打 `v2` tag~~（已作廢，見上）；未通過的項目回到步驟 5
 
 步驟 3–6 在 shan-skills repo 內，每步一個 commit。步驟 7 在 nec repo，屬客戶專案，只動 `.shan/` 與草稿區。
 

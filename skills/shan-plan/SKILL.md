@@ -203,7 +203,7 @@ disable-model-invocation: true
 
 **reviewer 不能看過實作過程。** 這跟 `shan-spec-qa` 閘門 4 是同一條原則：作者沿著原本的思路再走一次，抓不到那條思路沒照到的東西。
 
-v2 把這件事做成機制：`shan-code-review` 宣告 `context: fork`，**不論從哪裡呼叫**，它都在一個看不到呼叫端對話的 subagent 裡執行，並自己平行 spawn 兩軸。所以：
+這件事現在是機制：`shan-code-review` 宣告 `context: fork`，**不論從哪裡呼叫**，它都在一個看不到呼叫端對話的 subagent 裡執行，並自己平行 spawn 兩軸。所以：
 
 - 自動輪（`shan-implement` 呼叫）與手動輪（使用者另開視窗呼叫）跑的是**同一套機制**，差別只在呼叫端是不是作者
 - 自動輪的呼叫端是作者，它拿到報告後只能**原文轉述、等使用者裁決**；手動輪的呼叫端是乾淨視窗，可以直接依裁決修

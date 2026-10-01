@@ -1,7 +1,13 @@
-# `.shan/config.md` 樣板（v2）
+# `.shan/config.md` 樣板
 
-寫進專案的 `.shan/config.md`。**第一行的版本標記與章節標題固定不變**——其餘 shan-* skill 靠它們定位。
+寫進專案的 `.shan/config.md`。**第一行的格式標記與章節標題固定不變**——其餘 shan-* skill 靠它們定位。
 每節填不上就寫 `不適用`，不要留空。
+
+> **`<!-- shan-config: v2 -->` 是這份檔案的「格式版本」，不是 shan-skills 的版本號。**
+> skill 開場讀它，用來判斷這份 config 有沒有「B 節的每棒必讀段」與「G 節的三個政策欄位」。
+> 沒有這一行，skill 只能假設欄位都在，然後在缺欄位時行為錯亂。
+> 這個數字**只有在樣板的章節結構真的改變時才往上加**，與 commit、tag、發布一概無關——
+> shan-skills 本身不發版本，改動就 commit。
 
 <template>
 

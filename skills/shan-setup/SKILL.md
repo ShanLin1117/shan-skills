@@ -92,7 +92,7 @@ disable-model-invocation: true
 
 ### G — 三個政策欄位（一定要問）
 
-這三個欄位在 v1 沒有，實跑時因此出過 amend 違規與兩套 follow-up 規則打架：
+這三個欄位早期版本沒有，實跑時因此出過 amend 違規與兩套 follow-up 規則打架：
 
 | 欄位 | 選項 | 推薦 |
 |---|---|---|
@@ -128,7 +128,7 @@ disable-model-invocation: true
 
 ## 完成條件
 
-- `.shan/config.md` 存在，首行為 v2 標記，**A–I 每一節都有內容或明確標記「不適用」**——沒有一節是空的或含糊的
+- `.shan/config.md` 存在，首行為格式標記 `<!-- shan-config: v2 -->`，**A–I 每一節都有內容或明確標記「不適用」**——沒有一節是空的或含糊的
 - B 節有「每棒必讀」段；G 節三個政策欄位都有值
 - `.shan/guard.yaml` 存在，與 config A / G 節一致，且自我驗證時 hook 確實拒絕過一次
 - config 裡沒有任何一個指令查得到的當下狀態
