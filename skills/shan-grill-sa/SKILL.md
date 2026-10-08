@@ -1,6 +1,6 @@
 ---
 name: shan-grill-sa
-description: SA 端的需求審訊——用決策樹把客戶需求或問題單問到業務規則全部定案，事實從 SA 專案目錄的文件查，結論即時寫進草稿區的 grill.md 供後續產 requirements。當 SA 說「幫我釐清客戶需求」「這張問題單該怎麼處理」「需求分析」「shan-grill-sa」，或收到 PG 退回的需求疑義（req-questions.md）要答覆時使用。只問業務規則、不問技術實作——技術決策是 PG 的 shan-grill；定案後產 requirements 用 shan-to-req。
+description: SA 端的需求審訊——用決策樹把客戶需求或問題單問到業務規則全部定案，事實從 SA 專案目錄的文件查（現行系統行為可唯讀參考 codebase），結論即時寫進草稿區的 grill.md 供後續產需求分析書與 requirements。當 SA 說「幫我釐清客戶需求」「這張問題單該怎麼處理」「需求分析」「shan-grill-sa」，或收到 PG 退回的需求疑義（req-questions.md）要答覆時使用。只問業務規則、不問系統設計——設計決策（資料表、介面、流程落地）在系統設計階段用 shan-grill；定案後產需求分析書用 shan-to-sa、產 requirements 用 shan-to-req。
 disable-model-invocation: true
 ---
 
@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 把客戶的需求或問題，審訊到「每條業務規則都有人拍板、沒有東西被默默假設」為止。產出是**業務決策**，不是技術方案、不是 requirements 文件。
 
-這是 SA 的審訊。它與 `shan-grill` 共用同一套決策樹機制，差別在三處：**問什麼**（業務規則，不碰技術實作）、**事實去哪查**（SA 專案目錄的文件，不是 codebase）、**接哪一支**（`shan-to-req`）。
+這是 SA 的審訊。它與 `shan-grill` 共用同一套決策樹機制，差別在三處：**問什麼**（業務規則，不碰系統設計）、**事實去哪查**（SA 專案目錄的文件為主；現行系統行為可唯讀參考 codebase）、**接哪一支**（`shan-to-sa`、`shan-to-req`）。
 
 全程繁體中文（台灣用語）輸出。
 
@@ -24,6 +24,8 @@ disable-model-invocation: true
 
 草稿區檔案的格式一律依 `${CLAUDE_SKILL_DIR}/../../docs/scratch-contract.md`（下稱**草稿區契約**）。
 
+**codebase 參考（唯讀）**：SA 不一定在程式專案下作業。需要確認現行系統行為時，依 config **C 節 / A 節「codebase 參考路徑」**查；config 寫「由 prompt 指定」而使用者沒給，就請他指出路徑。**只查，不改**，查到的事實用業務語言寫進 `grill.md`。
+
 另外兩個輸入，存在才讀：
 
 - **`<草稿區>/<feature-slug>/req-questions.md`** —— PG 退回的需求疑義。`Status: open` 的每一則都是**前沿上的一題**：該題的「疑義」就是問題本體，「PG 的暫定理解」是備選答案之一。見 Step 3
@@ -38,6 +40,8 @@ disable-model-invocation: true
 **slug 要與 PG 端的 spec 資料夾同名**——它是兩端文件對得上的錨。對應的 PG spec 已存在就沿用它的名字，還沒有就問一句 PG 預計的名稱。
 
 `<草稿區>/<feature-slug>/grill.md` 已存在且狀態為「進行中」時，先讀它，從「待決」接續，不要重問已定案的。
+
+已存在但狀態為「已定案」，而這次是**需求變更**或**新一輪業務審訊**：把狀態改回「進行中」、決策編號**接續**、新決策標 `[業務]`；先前已定案的決策不動、不重問，除非這次變更明確推翻（那就追加「更正」條目指回原編號）。
 
 ---
 
@@ -76,7 +80,7 @@ disable-model-invocation: true
 
 ### 不問什麼
 
-**技術實作屬於 PG。** 資料表怎麼設計、用哪個模組、API 長相、要不要快取——這些不要問，也不要替 PG 決定。審訊中使用者主動談到技術方案時，記進 `grill.md` 的「明確排除」，標「屬 PG 設計，已知會」，**不要寫進決策**。
+**系統設計不在這一階段。** 資料表怎麼設計、欄位型別、URL、要不要快取——這些屬於系統設計階段（用 `shan-grill` 問、`shan-to-sd` 寫），不是業務決策。審訊中使用者主動談到設計方案時，記進 `grill.md` 的「明確排除」，標「屬系統設計階段，已知會」，**不要寫進業務決策**。
 
 ---
 
@@ -101,7 +105,9 @@ disable-model-invocation: true
 
 決策一敲定就寫進 `<草稿區>/<feature-slug>/grill.md`——**每輪結束立刻追加，不要累積到最後**。格式、決策編號規則（一經寫定不得重排）一律依草稿區契約與 `shan-grill` 定義的格式，這裡不重述。日期用 `date +%F`。
 
-與 `shan-grill` 不同的只有「依據事實」欄：寫**文件路徑加章節**，或「經 <誰> 確認」，不是 codebase 的檔案路徑。
+與 `shan-grill` 不同的只有「依據事實」欄：寫**文件路徑加章節**，或「經 <誰> 確認」；參考 codebase 查到的現行行為，寫業務語言的結論加來源檔，不貼程式碼。
+
+本階段的決策標題加 `[業務]` 標籤（`### D3 — [業務] …`），讓下游分得出哪些是業務決策、哪些是之後系統設計階段的 `[設計]` 決策。
 
 **處理 `req-questions.md`**：每解掉一則疑義，在 `grill.md` 的決策裡註明 `回應 req-questions Q<N>`。**答覆本身由 `shan-to-req` 寫進 `req-questions.md`**，這裡不動它。
 
@@ -115,7 +121,7 @@ disable-model-invocation: true
 
 1. 已敲定決策的清單（一行一條）
 2. 明確排除（含已知會 PG 的技術議題）
-3. 一句話說明下一步：這份 `grill.md` 可以接 `/shan-skills:shan-to-req`
+3. 一句話說明下一步：這份 `grill.md` 可以接 `/shan-skills:shan-to-sa`（先產需求分析書；轉 docx、人工補圖之後再 `shan-to-req`）。團隊流程不產需求分析書的，可直接接 `/shan-skills:shan-to-req`
 
 未經使用者確認「我們的理解一致了」之前，**不要**依這些結論動手做任何事。
 
@@ -124,6 +130,6 @@ disable-model-invocation: true
 ## 邊界
 
 - **MUST NOT** 修改 spec 目錄下的文件（見 config A 節；hook 會擋）。要改已釋出的需求，走 `shan-to-req` 的修訂流程。
-- **MUST NOT** 做技術決策，也不寫程式碼。
-- **MUST NOT** 替 PG 回答技術問題，或把技術方案寫進業務決策。
-- 這支 skill 不產出 requirements，也不產 SA 文件（交付客戶的 docx）；那是 `shan-to-req` 與之後的事。
+- **MUST NOT** 做系統設計決策，也不寫程式碼；codebase 唯讀。
+- **MUST NOT** 把設計方案寫進業務決策。
+- 這支 skill 不產任何文件；需求分析書是 `shan-to-sa`，requirements 是 `shan-to-req`。

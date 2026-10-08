@@ -25,39 +25,49 @@
 
 ---
 
-### 團隊流程：SA 與 PG 接力
+### 團隊流程：SA 與 PG 分段接力
 
-上表是單人從頭做到尾的版本。團隊裡 SA 與 PG 是不同人、通常在不同的 repo，鏈在 `requirements.md` 處切成兩段：
+上表是單人從頭做到尾的版本。團隊裡 SA 與 PG 通常是不同人、在不同的 repo。**交接物有哪些、命名、格式、要不要輸出 Word，都由各專案的 config 決定**；下表是一個完整團隊的情形，缺哪個階段就跳過哪一列。
 
 | 角色 | 階段 | 吃什麼 | 吐什麼 |
 |---|---|---|---|
-| SA | `shan-grill-sa` | 客戶需求、問題單、SA 專案文件（、`req-questions.md`） | `grill.md`（業務決策） |
-| SA | `shan-to-req` | `grill.md` | `spec-draft/requirements.md`（`Status: draft`） |
-| SA | `shan-spec-qa`（需求模式） | requirements 草稿 | 修訂後的 requirements + `qa-report.md` |
-| SA | **手動簽出** | | `Status: released`、填 `Released`，搬進 spec 目錄，把檔案交給 PG |
-| PG | **手動放入** | SA 交付的檔 | `requirements-in/requirements.md` |
-| PG | `shan-grill` | `requirements-in/` + codebase | `grill.md`（技術決策）；需求有疑義則寫 `req-questions.md` |
-| PG | `shan-to-spec` | `requirements-in/` + `grill.md` | `spec-draft/` 三份：requirements 原樣副本 + design + tasks |
-| PG | `shan-spec-qa`（完整模式） | 三份 spec | 含閘門 3b 交接檢查：requirements 沒被動過、rev 對得上 |
+| SA | `shan-grill-sa` | 客戶需求、問題單、SA 專案文件（、`req-questions.md`） | `grill.md`（`[業務]` 決策） |
+| SA | `shan-to-sa` | `grill.md` | `doc-draft/<名稱>_SA.md` |
+| SA | `shan-to-docx` | SA.md + 專案的 Word 範本與對應檔 | `<名稱>_SA.docx`（基本版） |
+| SA | **人工補完** | | 貼畫面圖、補其他開發事項到 docx |
+| SA | `shan-to-req` | SA.md + 補完的 SA.docx（兩者差異請你裁決）+ `grill.md` | `spec-draft/requirements.md`（`Status: draft`） |
+| SA | `shan-spec-qa`（需求模式）→ **手動簽出** | requirements 草稿 | `Status: released` |
+| SA | `shan-grill`（系統設計） | requirements + SA.md + codebase（唯讀） | `grill.md`（`[設計]` 決策，接續編號） |
+| SA | `shan-to-sd` | requirements + 設計決策 + codebase 查證 | `doc-draft/<名稱>_SD.md`（畫面、資料流、欄位對照、DDL、URL、流程） |
+| SA | `shan-spec-qa`（設計書模式）→ **手動簽出** → `shan-to-docx` → 人工補圖 | SD 草稿 | 簽出的 SD.md、客戶版 SD.docx |
+| SA | **交付** | | `requirements.md` + `<名稱>_SD.md`（及 docx）給 PG |
+| PG | **手動放入** | SA 交付的檔 | `handoff-in/` |
+| PG | `shan-grill` | `handoff-in/` + codebase | `grill.md`（SD 之下的實作決策）；上游有疑義則寫 `req-questions.md` |
+| PG | `shan-to-spec` | `handoff-in/` + `grill.md` | `spec-draft/`：requirements、SD 的原樣副本 + design + tasks |
+| PG | `shan-spec-qa`（完整模式） | 整套 spec | 含閘門 3b：上游沒被動過、rev 對得上、SD 項目都有任務 |
 | PG | **手動搬進 spec 目錄** → `shan-plan` → `shan-implement` → `shan-code-review` | | 同單人流程 |
 
-**需求變更**（開發中 SA 改了需求）：
+**變更**（開發中 SA 改了需求或設計）：
 
 ```
-SA   shan-grill-sa（只問這次改什麼） → shan-to-req（Rev+1、Change Log 追加） → spec-qa → 簽出 → 交付新檔
-PG   換掉 requirements-in/ → shan-to-spec 進修訂流程：
-       讀落差 rev 的 Change Log，逐項找受影響的決策與任務
+SA   shan-grill-sa（只問這次改什麼）→ shan-to-req（Rev+1、Change Log 追加）→ spec-qa → 簽出
+     requirements 升版後，SD 的 Based on 就落後了 → shan-to-sd 修訂（SD 自己 Rev+1）→ spec-qa → 簽出
+     只改 SD（補欄位、調 DDL）則 requirements 不動 → 只有 SD Rev+1
+PG   換掉 handoff-in/ 的檔 → shan-to-spec 進修訂流程：
+       讀兩份上游各自落差 rev 的 Change Log，逐項找受影響的決策與任務
        未勾選的任務改寫；已勾選的不動、另加新任務並開票
        Based on 更新 → shan-spec-qa → 重跑 shan-plan（讀修訂記錄、保留已完成棒次）
 ```
 
-**PG 發現需求有洞**：不改、不猜。`req-questions.md` 追加一則（標明阻斷與否）→ 使用者帶給 SA → `shan-grill-sa` 當前沿處理 → `shan-to-req` 寫答覆（必要時新 rev）。非阻斷的疑義 PG 先以暫定理解往下做，design 對應處標「待確認」。
+**PG 發現上游有洞**：不改、不猜。`req-questions.md` 追加一則（針對 Req 或 SD 的某段落，標明阻斷與否）→ 使用者帶給 SA → `shan-grill-sa` 當前沿處理 → `shan-to-req` 寫答覆（必要時新 rev）。非阻斷的疑義 PG 先以暫定理解往下做，design 對應處標「待確認」。
+
+**Word 輸出的分工**：AI 只負責用專案範本產出基本 docx（樣式、表格、程式碼區塊、清單）；畫面截圖、頁首的專案名稱、版面微調由人工補。docx 是輸出品不是來源——md 改了重新轉換會產生新檔，人工補的內容不會自動帶過去，需要手動合併。
 
 ---
 
 ## 二、走一遍：結帳套用優惠券
 
-以下用單人流程走一遍。團隊流程的前兩階段換成 SA 端的 `shan-grill-sa` 與 `shan-to-req`，其餘相同。
+以下用單人流程走一遍。團隊流程的前兩階段換成 SA 端的 `shan-grill-sa`、`shan-to-sa`、`shan-to-req`（有 SD 階段時再加 `shan-grill`、`shan-to-sd`），其餘相同。
 
 ### 階段 0｜`shan-setup`
 

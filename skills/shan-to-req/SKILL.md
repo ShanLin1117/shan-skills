@@ -1,6 +1,6 @@
 ---
 name: shan-to-req
-description: SA 端把定案的業務決策綜合成 requirements 草稿（user story 加可觀察的驗收條件），帶交接用的 Release Info，寫進草稿區等 SA 核可簽出後再交給 PG。也處理需求變更（新 rev）與 PG 退回疑義的答覆。當使用者說「產 requirements」「把需求寫成規格」「交給 PG 的需求」「需求變更」「shan-to-req」，或 shan-grill-sa 已定案要進入規格階段時使用。不面談——要問問題請先跑 shan-grill-sa；產好的 requirements 要品保用 shan-spec-qa；設計與任務是 PG 的 shan-to-spec，這裡不碰。
+description: SA 端把需求分析書（md 加人工補完的 docx）與業務決策綜合成 requirements 草稿（user story 加可觀察的驗收條件），帶交接用的 Release Info，寫進草稿區等 SA 核可簽出後再交給 PG。也處理需求變更（新 rev）與 PG 退回疑義的答覆。當使用者說「產 requirements」「把分析書轉成 user story」「交給 PG 的需求」「需求變更」「shan-to-req」，或需求分析書已完成、要進入交付 PG 的規格階段時使用。不面談——要問問題請先跑 shan-grill-sa；產好的 requirements 要品保用 shan-spec-qa；設計與任務是 PG 的 shan-to-spec，這裡不碰。
 disable-model-invocation: true
 ---
 
@@ -18,11 +18,15 @@ disable-model-invocation: true
 
 1. **`.shan/config.md`** —— 缺就告訴使用者跑 `/shan-skills:shan-setup`；首行不是 `<!-- shan-config: v2 -->` 就提示一次「config 是舊版」，以現有內容繼續
 2. **格式契約** —— config **A 節**指向的那份，**只取 requirements 的部分**。標題、必要章節、驗收條件句式一律以它為準，本 skill 不重述模板
-3. **決策來源** —— `<草稿區>/<feature-slug>/grill.md`（`shan-grill-sa` 產的）。沒有就從當前對話綜合，並在交付時說明「本次沒有 grill 記錄，決策來自對話」
-4. **`req-questions.md`**（存在才讀）—— PG 退回的疑義。見 Step 5
-5. **既有 requirements.md**（spec 目錄或 `spec-draft/`，存在才讀）—— 有就是**需求變更**，走 Step 4 的修訂流程，不是重寫
-6. **專案脈絡** —— 依 config **B 節**順序讀 SA 文件；詞彙用 config B 節指定的來源，不自創同義詞
-7. 交接區塊的格式依 `${CLAUDE_SKILL_DIR}/../../docs/scratch-contract.md`（下稱**草稿區契約**）的「`requirements.md` 的交接區塊」
+3. **上游文件（主要輸入）** —— 需求分析書：
+   - `doc-draft/<名稱>_SA.md`（`shan-to-sa` 產的）
+   - 人工補完的 `<名稱>_SA.docx`（使用者指定路徑；用 `python -X utf8 ${CLAUDE_SKILL_DIR}/../../scripts/docx/docx_dump.py <檔案>` 傾印，圖片標 `[IMAGE]`、內容不解析，畫面細節向使用者確認）
+   - 兩者**都沒有**（團隊流程不產需求分析書）就以 `grill.md` 與當前對話為唯一來源
+4. **決策來源** —— `<草稿區>/<feature-slug>/grill.md` 中 `[業務]` 或無標籤的決策（`shan-grill-sa` 產的）。沒有就說明「本次沒有 grill 記錄」
+5. **`req-questions.md`**（存在才讀）—— PG 退回的疑義。見 Step 5
+6. **既有 requirements.md**（spec 目錄或 `spec-draft/`，存在才讀）—— 有就是**需求變更**，走 Step 4 的修訂流程，不是重寫
+7. **專案脈絡** —— 依 config **B 節**順序讀 SA 文件；詞彙用 config B 節指定的來源，不自創同義詞
+8. 交接區塊的格式依 `${CLAUDE_SKILL_DIR}/../../docs/scratch-contract.md`（下稱**草稿區契約**）的「`requirements.md` 的交接區塊」
 
 ---
 
@@ -33,6 +37,19 @@ disable-model-invocation: true
 **MUST NOT 自己替未決事項做決定再寫進 requirements。** requirements 裡每一條規則都應該有人拍過板。
 
 使用者明說「那幾項先擱著、照現況寫」才繼續，並把它們原樣寫進格式契約指定的待確認位置，**標明 PG 不可依此設計**。
+
+### 上游文件對照（本 skill 唯一的 checkpoint）
+
+需求分析書的 md 與 docx 會分歧：docx 經人工補過圖，也可能加了 md 裡沒有的開發事項。**不要自己決定誰贏。**
+
+1. 把 docx 傾印結果與 md 逐章節對照，列出三類差異：
+   - **只在 docx**（人工加的）：附原文
+   - **只在 md**（docx 被刪掉或沒轉進去）：附原文
+   - **兩邊都有但內容不同**：並排列出
+2. 把差異清單交給使用者，請他逐項裁決：採 docx、採 md、或兩者都不採（寫進待確認）。**沒裁決的差異不寫進 requirements**
+3. 建議使用者把採 docx 的項目回補到 md，讓兩者重新同步——但**這支 skill 不改 md**
+
+沒有 docx、或兩者沒有差異，跳過此段。裁決結果記進 Release Info 的 `Sources`（見 Step 4）。
 
 ---
 
@@ -72,7 +89,7 @@ disable-model-invocation: true
 
 ### 新需求
 
-`Status: draft`、`Rev: 1`、`Change Log` 一則「初版」。**一律 draft**——簽出是人的動作，見 Step 6。
+`Status: draft`、`Rev: 1`、`Change Log` 一則「初版」，`Sources` 列出實際依據的上游文件（`<名稱>_SA.md`、`<名稱>_SA.docx` 與 sha256 前 8 碼，有的話）。**一律 draft**——簽出是人的動作，見 Step 6。
 
 ### 需求變更（既有 requirements.md 已存在）
 
@@ -108,7 +125,7 @@ disable-model-invocation: true
 4. 告訴使用者下一步，**三步，順序固定**：
    1. 跑 `/shan-skills:shan-spec-qa`（會自動走需求模式）
    2. 通過後**由 SA 手動**把 `Status` 改成 `released`、填 `Released` 日期——這是簽出，skill 不代做
-   3. **由 SA** 把 `requirements.md` 搬進 config A 節的 spec 目錄，並把同一份檔案交給 PG（PG 放進自己草稿區的 `requirements-in/`）
+   3. **由 SA** 把 `requirements.md` 搬進 config A 節的 spec 目錄，並把同一份檔案交給 PG（PG 放進自己草稿區的 `handoff-in/`）。config A 節「系統設計書」為「有」的團隊，下一步是設計決策（`shan-grill`）與 `shan-to-sd`，兩份簽出後**一起**交給 PG
 
 **MUST NOT 直接寫入 spec 目錄。** 那道搬遷動作是人工核可閘門，hook 也會擋。
 
@@ -131,4 +148,5 @@ disable-model-invocation: true
 - **MUST NOT 寫 design 或 tasks**，也不在 requirements 裡暗示實作做法。
 - **MUST NOT 把 `Status` 設為 `released`。** 簽出是人的動作。
 - **MUST NOT 修改 spec 目錄下的既有文件。**
-- 交付客戶的 SA 文件（docx）不在這支的範圍；它是 requirements 的衍生輸出，另案處理。
+- 交付客戶的 docx 不在這支的範圍：需求分析書的 md 由 `shan-to-sa` 產、轉 Word 用 `shan-to-docx`。
+- **MUST NOT 修改需求分析書的 md 或 docx。**

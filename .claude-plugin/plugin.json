@@ -1,6 +1,6 @@
 {
   "name": "shan-skills",
-  "description": "AI 開發工作流：grill → spec → spec-qa → plan → implement → code-review；支援 SA（grill-sa → to-req）與 PG（grill → to-spec …）接力，skill 零專案知識，專案事實住在 .shan/config.md",
+  "description": "AI 開發工作流：grill → spec → spec-qa → plan → implement → code-review；支援 SA（分析書、需求、系統設計書、Word 輸出）與 PG 分段接力，skill 零專案知識，專案事實住在 .shan/config.md",
   "author": {
     "name": "Shan Lin"
   }

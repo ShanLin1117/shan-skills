@@ -14,7 +14,7 @@ shan-setup        新 repo 跑一次 ─────→ .shan/config.md + .shan/
 shan-grill        對話 ──────────────→ 決策清單
      ↓
 shan-to-spec      決策清單 ──────────→ spec 草稿
-                  （團隊流程下上面兩步拆成 SA 的 grill-sa → to-req 與 PG 的 grill → to-spec，見下）
+                  （團隊流程下上面兩步拆成 SA 與 PG 兩段，多出分析書、SD、docx，見下）
      ↓
 shan-spec-qa      spec 品保 ─────────→ 四道閘門：格式 / 識別字 / 機械 / 對抗式語意
      ↓
@@ -25,25 +25,38 @@ shan-implement    一棒一個視窗 ──────→ 綠燈 + commit + 自
 shan-code-review  fork 的乾淨 context ─→ 規範軸 ∥ 意圖軸，並排回報
 ```
 
-### 團隊流程：SA 與 PG 分兩段
+### 團隊流程：SA 與 PG 分段接力
 
-一個專案若由不同角色接力（SA 收需求、PG 做開發），工作流在 `requirements.md` 處切開，它是兩段之間的契約：
+一個專案若由不同角色接力（SA 收需求與做系統設計、PG 開發），工作流在交接物處切開。**交接物有哪些、命名、格式、要不要輸出 Word，都由各專案的 config 決定**，skill 不綁死：
 
 ```
-SA 的文件專案（setup 選 sa 輪廓）                   PG 的程式專案
-shan-grill-sa → shan-to-req → shan-spec-qa(需求模式)
-                       │            │
-                       │      SA 手動簽出 Status: released
-                       └─────→ requirements.md ──交付──→ requirements-in/
-                                                         shan-grill(技術決策) → shan-to-spec(design+tasks)
-                                                         → shan-spec-qa(完整模式) → shan-plan → …
-                     ←──── req-questions.md（PG 的疑義退回 SA）────
+SA（文件專案，setup 選 sa 輪廓；系統設計時唯讀參考 codebase）
+ shan-grill-sa ──→ shan-to-sa ──→ shan-to-docx ──→ 人工補圖 ──┐
+  業務決策         需求分析書.md     需求分析書.docx             │
+                                                              ▼
+                    shan-to-req ←── md + 人工補完的 docx（差異請你裁決）
+                        │  requirements.md（user story + 驗收條件）
+                        ▼
+                  shan-spec-qa（需求模式）→ SA 手動簽出
+                        │
+ shan-grill（設計決策）──→ shan-to-sd ──→ shan-spec-qa（設計書模式）→ SA 手動簽出
+                            系統設計書.md ──→ shan-to-docx ──→ 人工補圖 → 客戶版 SD.docx
+                        │
+                        └──── requirements.md + SD 交付 ────┐
+                                                            ▼
+PG（程式專案）                                      handoff-in/
+ shan-grill（實作決策）→ shan-to-spec（design + tasks）→ shan-spec-qa（完整模式）→ shan-plan → …
+        ▲                                                   │
+        └──────── req-questions.md（疑義退回 SA）────────────┘
 ```
 
-- **簽出是人的動作**：`Status` 由 SA 手動翻成 `released`，skill 不代簽
-- **需求變更走 rev**：改一個字就 `Rev` +1、`Change Log` 追加；PG 依 Change Log 修訂 design 與 tasks，不比對全文
-- **PG 不改 requirements**：有疑義寫 `req-questions.md` 退回，`spec-qa` 會逐字比對 PG 手上的 requirements 有沒有被動過
-- **單人流程不受影響**：同一個 repo、同一個人，依序跑 `grill-sa → to-req → spec-qa → （自己簽出）→ grill → to-spec → spec-qa → …`。找不到 `requirements-in/` 時，`shan-grill` 與 `shan-to-spec` 會改讀已簽出的 `spec-draft/requirements.md`
+- **權威順序**：requirements（行為）> SD（DB、介面、流程契約）> design（SD 之下的實作決策）。衝突時 PG 不自行裁決，走 `req-questions.md`
+- **簽出是人的動作**：`Status` 由 SA 手動改成 `released`，skill 不代簽
+- **requirements 與 SD 各自有 `Rev`**：只改 SD 不讓需求升版；SD 以 `Based on` 綁住它依據的需求版次。PG 依各自的 `Change Log` 修訂 design 與 tasks，不比對全文
+- **PG 不改上游**：`spec-qa` 逐字比對 PG 手上的副本，被動過就是阻斷級
+- **docx 是輸出品，不是來源**：`shan-to-docx` 以專案的 Word 範本為底轉換（樣式對應檔由專案提供）；畫面截圖等複雜內容人工補。`shan-to-req` 同時讀 md 與補完的 docx，兩者有差異時由你裁決
+- **團隊沒有的階段就跳過**：沒有系統設計書就在 config 寫「無」，整段不走
+- **單人流程不受影響**：同一個 repo、同一個人，依序跑；找不到 `handoff-in/` 時，`shan-grill`、`shan-to-sd`、`shan-to-spec` 改讀已簽出的 `spec-draft/requirements.md` 與 `doc-draft/` 裡的 SD
 
 細節見 [docs/scratch-contract.md](./docs/scratch-contract.md)。
 
@@ -54,16 +67,19 @@ shan-grill-sa → shan-to-req → shan-spec-qa(需求模式)
 | Skill | 做什麼 | 什麼時候叫它 |
 |---|---|---|
 | `shan-setup` | 探索專案的技術棧、路徑、測試與 commit 慣例，寫出 `.shan/config.md` 與 `.shan/guard.yaml` | 每個新 repo 跑一次 |
-| `shan-grill-sa` | SA 端的需求審訊：只問業務規則，事實從 SA 專案文件查；也處理 PG 退回的疑義 | 收到客戶需求或問題單，要釐清 |
-| `shan-to-req` | 把業務決策綜合成 `requirements.md`（user story + 驗收條件 + Release Info），支援需求變更的新 rev | SA 審訊完，要產需求 |
-| `shan-grill` | 決策樹審訊：逐輪推進決策前沿，事實自己查、決策交你裁決。團隊流程下專問技術決策 | 需求還沒成形，或 requirements 到手後要定技術決策 |
-| `shan-to-spec` | 把 SA 簽出的 requirements 加上技術決策，綜合成 design + tasks。不改 requirements，疑義退回；requirements 釋出新 rev 時做修訂 | PG 收到 requirements 並審訊完，要寫設計與任務 |
-| `shan-spec-qa` | 對 spec 文件本身做品保；語意審查強制由不共享脈絡的獨立審查者執行。**需求模式**審 requirements 能不能交給 PG，**完整模式**審整份 spec 並比對是否忠於 requirements | requirements 準備簽出前；spec 初稿或修訂完，準備開工前 |
+| `shan-grill-sa` | SA 端的需求審訊：只問業務規則，事實從 SA 專案文件查（現行系統行為可唯讀參考 codebase）；也處理 PG 退回的疑義 | 收到客戶需求或問題單，要釐清 |
+| `shan-to-sa` | 把業務決策綜合成需求分析書 md | SA 審訊完，要寫分析書 |
+| `shan-to-docx` | 以專案的 Word 範本把需求分析書／系統設計書 md 轉成 docx（只換內文，保留頁首頁尾與樣式），圖片留預留位置由人工補；不覆蓋既有檔 | 要交付客戶 Word 版 |
+| `shan-to-req` | 把需求分析書（md + 人工補完的 docx）與業務決策綜合成 `requirements.md`（user story + 驗收條件 + Release Info），支援需求變更的新 rev | 分析書完成，要產給 PG 的需求 |
+| `shan-to-sd` | 把簽出的 requirements 與設計決策綜合成系統設計書 md（畫面、資料流、欄位對照、DDL、URL 與流程），事實以 codebase 查證 | 需求簽出且設計決策定案，團隊有 SD 階段時 |
+| `shan-grill` | 決策樹審訊：逐輪推進決策前沿，事實自己查、決策交你裁決。團隊流程下專問設計與實作決策（SA 產 SD 前、PG 做 design 前各一次）| 需求還沒成形，或 requirements／SD 到手後要定設計決策 |
+| `shan-to-spec` | 把 SA 簽出的 requirements 與 SD 加上實作決策，綜合成 design + tasks。不改上游，疑義退回；上游釋出新 rev 時做修訂 | PG 收到 requirements 並審訊完，要寫設計與任務 |
+| `shan-spec-qa` | 對 spec 文件本身做品保；語意審查強制由不共享脈絡的獨立審查者執行。**需求模式**審 requirements 能不能交給 PG，**設計書模式**審 SD 是否忠於需求且不與 codebase 衝突，**完整模式**審整份 spec 並比對是否忠於 requirements 與 SD | requirements 準備簽出前；spec 初稿或修訂完，準備開工前 |
 | `shan-plan` | 把任務清單切成 session 邊界，產出地圖與每棒的開場 prompt | 任務數超過 3，要開始實作 |
 | `shan-implement` | 議定 seam → 紅綠迴圈 → 驗證閘門 → 收尾交棒 → 自動審查。只做被指派的那一棒 | 動工一棒 |
 | `shan-code-review` | 在 fork 出來的乾淨 context 平行 spawn 兩軸審查 agent，並排回報、不跨軸重排、**只回報不動手** | 一棒 commit 之後（自動），或另開視窗做第 2 輪／最終把關 |
 
-除了 `shan-code-review`，其餘八支都掛 `disable-model-invocation: true`——**只能手動叫**，不會自動觸發。`shan-code-review` 不能掛這個旗標，因為它擋的是「模型的一切呼叫」而不只是自動觸發，掛了 `shan-implement` 就無法在 commit 後呼叫它；改以 description 明寫「只在自動輪或使用者明確呼叫時使用」來防誤觸發。呼叫名是 `/shan-skills:shan-grill`，短別名 `/shan-grill` 在沒有同名 skill 時也能用。
+除了 `shan-code-review`，其餘都掛 `disable-model-invocation: true`——**只能手動叫**，不會自動觸發。`shan-code-review` 不能掛這個旗標，因為它擋的是「模型的一切呼叫」而不只是自動觸發，掛了 `shan-implement` 就無法在 commit 後呼叫它；改以 description 明寫「只在自動輪或使用者明確呼叫時使用」來防誤觸發。呼叫名是 `/shan-skills:shan-grill`，短別名 `/shan-grill` 在沒有同名 skill 時也能用。
 
 ## 四層架構
 
@@ -134,17 +150,25 @@ harness 層有自動化測試：
 node tests/guard-test.mjs
 ```
 
-它在暫存目錄建一個沙盒 repo，對兩支 guard 腳本餵 27 組 `PreToolUse` JSON，驗證拒絕與放行。skill 層的評測是手動清單，見 [evals/cases.md](./evals/cases.md)。
+它在暫存目錄建一個沙盒 repo，對兩支 guard 腳本餵 29 組 `PreToolUse` JSON，驗證拒絕與放行。docx 轉換腳本另有測試（需要 `python-docx`，請裝在專案虛擬環境）：
+
+```bash
+python -X utf8 tests/docx-test.py
+```
+
+skill 層的評測是手動清單，見 [evals/cases.md](./evals/cases.md)。
 
 ## Repo 結構
 
 ```
 .claude-plugin/plugin.json      plugin manifest
-skills/shan-*/                  九支 skill（shan-setup 含 config / guard / spec 格式三份樣板；shan-code-review 含兩軸檢查清單）
+skills/shan-*/                  十二支 skill（shan-setup 含 config / guard 樣板、spec / 需求分析書 / SD 格式預設與 docx 對應樣板；shan-code-review 含兩軸檢查清單）
 agents/                         shan-review-standards、shan-review-intent
 hooks/hooks.json                PreToolUse 註冊
 scripts/                        guard-protected-paths.sh、guard-git.sh、lib.sh
+scripts/docx/                   md_to_docx.py、docx_dump.py（通用，不含專案知識）
 tests/guard-test.mjs            harness 層測試
+tests/docx-test.py              docx 腳本測試
 docs/scratch-contract.md        草稿區契約
 docs/redesign-2026-09.md        2026 年 9 月改版的設計文件
 evals/cases.md                  skill 層的評測案例

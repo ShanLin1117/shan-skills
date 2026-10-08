@@ -10,10 +10,11 @@
 
 | 檔案 | 產出者 | 讀取者 | 寫入模式 | 生命週期 |
 |---|---|---|---|---|
-| `grill.md` | shan-grill、shan-grill-sa | shan-to-spec、shan-to-req | 每輪追加 | 審訊定案後凍結 |
-| `spec-draft/` | shan-to-req（僅 `requirements.md`）、shan-to-spec（`requirements.md` 副本、`design.md`、`tasks.md`） | shan-spec-qa、使用者 | 覆寫 | 搬進正式目錄後留作歷史 |
-| `requirements-in/requirements.md` | **使用者**（PG 端，把 SA 交付的檔放進來） | shan-grill、shan-to-spec、shan-spec-qa | 整檔替換（人工） | 每次 SA 釋出新 rev 就替換 |
-| `req-questions.md` | shan-to-spec、shan-spec-qa、shan-grill（PG 端提問）；shan-to-req（SA 端答覆） | 使用者、shan-grill-sa、shan-to-req | 只追加；`Status:` 可改 | 至所有問題 `answered` 或 `withdrawn` |
+| `grill.md` | shan-grill、shan-grill-sa | shan-to-sa、shan-to-req、shan-to-sd、shan-to-spec；shan-grill 與 shan-grill-sa 重開時 | 每輪追加 | 審訊定案後凍結；進入下一階段（如系統設計）可重開並接號 |
+| `doc-draft/` | shan-to-sa（`<名稱>_SA.md`）、shan-to-sd（`<名稱>_SD.md`）、shan-to-docx（`.docx`） | shan-grill（SA 系統設計階段）、shan-to-req、shan-to-sd、shan-spec-qa（只讀）、shan-to-spec（單人流程，讀已簽出的 SD）、shan-to-docx、使用者 | **已存在就不覆蓋**（人工可能編輯過），見該節 | 搬進文件目錄後留作歷史 |
+| `spec-draft/` | shan-to-req（僅 `requirements.md`）、shan-to-spec（`requirements.md` 與 SD 的原樣副本、`design.md`、`tasks.md`） | shan-spec-qa、shan-to-sd 與 shan-grill（讀已簽出的 requirements）、shan-to-spec（單人流程）、使用者 | 覆寫 | 搬進正式目錄後留作歷史 |
+| `handoff-in/` | **使用者**（PG 端，把 SA 交付的檔放進來） | shan-grill、shan-to-sd、shan-to-spec、shan-spec-qa | 整檔替換（人工） | SA 每釋出新 rev 就替換 |
+| `req-questions.md` | shan-to-spec、shan-spec-qa、shan-grill、shan-to-sd（提問）；shan-to-req（SA 端答覆） | 使用者、shan-grill-sa、shan-to-req、shan-to-spec、shan-spec-qa、shan-grill | 只追加；`Status:` 可改 | 至所有問題 `answered` 或 `withdrawn` |
 | `qa-report.md` | shan-spec-qa | 使用者、shan-plan | 每輪追加 | spec 定稿後凍結 |
 | `session-map.md` | shan-plan | shan-implement、shan-code-review | 主體覆寫；`## 修訂記錄` 只追加 | 全案 |
 | `findings.md` | shan-implement、shan-code-review、shan-spec-qa | 所有後續棒次、shan-to-spec | 只追加 | 全案 |
@@ -32,9 +33,11 @@
 
 格式由 `shan-grill` 定義（`shan-grill-sa` 沿用同一格式，差別只在「依據事實」指向 SA 文件而非 codebase），摘要：`## 已敲定決策`（D1、D2…，每條含問題／決定／理由／依據事實）、`## 待決`、`## 明確排除`。決策編號一經寫定不得重排，`shan-to-spec` 的設計文件直接接續同一組編號。
 
+同一份 `grill.md` 可跨階段使用：業務審訊（`shan-grill-sa`）定案後，系統設計階段用 `shan-grill` 重開、**接續編號**。決策標題可加 `[業務]` / `[設計]` 標籤（`### D7 — [設計] …`）說明它屬於哪一階段，下游 skill 靠標籤挑自己要的決策。
+
 ## `spec-draft/`
 
-份數與檔名由 config A 節指向的格式契約決定。SA 端 `shan-to-req` 只產 `requirements.md`；PG 端 `shan-to-spec` 產 `design.md`、`tasks.md`，並把 `requirements.md` **原樣複製**進來讓三份成套。每次執行覆寫自己負責的檔。使用者核可後**由使用者**搬進正式 spec 目錄，skill 不代做。
+份數與檔名由 config A 節指向的格式契約決定。SA 端 `shan-to-req` 只產 `requirements.md`；PG 端 `shan-to-spec` 產 `design.md`、`tasks.md`，並把 `requirements.md` 與（若有）`<名稱>_SD.md` **原樣複製**進來讓整套成套。每次執行覆寫自己負責的檔。使用者核可後**由使用者**搬進正式 spec 目錄，skill 不代做。
 
 ## `requirements.md` 的交接區塊
 
@@ -46,6 +49,7 @@ SA 與 PG 之間的契約是 `requirements.md`。不論專案的格式契約長�
 - **Status**: draft | released
 - **Rev**: 2
 - **Released**: YYYY-MM-DD
+- **Sources**: <選填：這版 requirements 依據哪些上游文件，例：功能_SA.md、功能_SA.docx（sha256 前 8 碼）>
 
 ### Change Log
 
@@ -59,12 +63,44 @@ SA 與 PG 之間的契約是 `requirements.md`。不論專案的格式契約長�
 - **釋出後再改一個字，就是新 rev**：`Rev` +1、`Status` 回到 `draft`、`Change Log` 追加一則，再走一次 QA 與簽出
 - **Change Log 以 Req / 驗收條件為粒度**（`Req 2.4`、`Req 1.2`），三種動詞固定：新增／修改／移除，每則附原因。它是 PG 修訂 design 與 tasks 的唯一依據
 - **編號永不重用、永不重排**：被移除的需求保留標題，並標 `（已移除，rev N）`，驗收條件刪除。這個墓碑讓 `B − A` 涵蓋率比對與既有 commit 的 `Refs:` 回指不失效
-- PG 端的 `design.md`（沒有 design 的小功能則 `tasks.md`）在 `## Overview` 第一行記 `**Based on:** requirements rev N`，供 spec-qa 比對
+- PG 端的 `design.md`（沒有 design 的小功能則 `tasks.md`）在 `## Overview` 第一行記 `**Based on:** requirements rev N`；有系統設計書時記 `**Based on:** requirements rev N、SD rev M`，供 spec-qa 比對
+
+### 系統設計書（SD）的交接區塊
+
+config A 節「系統設計書」為「有」的團隊，`<名稱>_SD.md` 檔尾同樣帶 `## Release Info`，欄位與規則同上，另加一欄：
+
+```markdown
+- **Based on**: requirements rev 2
+```
+
+- **SD 的 `Rev` 與 requirements 的 `Rev` 各自獨立。** 只改 SD（補一個欄位、調整一段 DDL）不讓 requirements 升版——PG 看 SD 自己的 Change Log 就知道動了什麼，不會被「需求沒變卻升版」誤導
+- **`Based on` 把兩者綁住**：SD 宣告自己依據 requirements 的哪一版。requirements 升版後，SD 的 `Based on` 落後 = SD 尚未跟上，不得簽出
+- **SD 必帶 `對應需求` 行**：每個功能段落底下有一行 `**對應需求**：Req X.Y, …`，專案的 SD 格式契約沒有這一行時照加（與 `Release Info` 同理，是交接機制要求的，不是格式偏好）。`shan-spec-qa` 靠它比對涵蓋
+- SD 的 `Status` 同樣由人翻；SD 釋出後再改，同樣 `Rev` +1、`Status` 回 `draft`、清空 `Released`；Change Log 同樣以功能段落／Req 為粒度，動詞固定新增／修改／移除
+- 轉成 docx 給客戶時，`Release Info` 整節由 docx 對應檔的 `skip_sections` 濾掉，不外流
+
+### 交付件放哪（PG 端 `handoff-in/`）
+
+SA 交付的檔由使用者手動放進 `<草稿區>/<slug>/handoff-in/`：
+
+| 檔案 | 必要 | 說明 |
+|---|---|---|
+| `requirements.md` | 是 | 簽出的需求 |
+| `<名稱>_SD.md` | SD 階段為「有」時是 | 簽出的系統設計書，**優先收 md**（才有 `Release Info` 可比對 rev）。單人流程沒有 `handoff-in/` 時，改讀 `doc-draft/` 裡已簽出的同名檔 |
+| `<名稱>_SD.docx` | 否 | 客戶版／人工補過圖的版本。只收 docx 沒有 md 時，skill 用 `docx_dump.py` 讀文字，但**無法比對 rev**，spec-qa 會在報告註明降級 |
+
+## `doc-draft/`
+
+`shan-to-sa`、`shan-to-sd`、`shan-to-docx` 的產出：`<名稱>_SA.md`、`<名稱>_SD.md`、`<名稱>_SA.docx`、`<名稱>_SD.docx`。命名由 config A 節「交接物」決定。
+
+這些檔案常被人手動改過（尤其是 docx 補了畫面圖），所以規則與其他草稿區檔案不同：**目標檔已存在就不覆蓋**。skill 停下來告訴使用者，由他決定換名（如加 `-v2`）、自己刪掉舊檔、或改為修訂既有檔。`md_to_docx.py` 本身也拒絕覆蓋既有輸出。
+
+使用者核可後**由使用者**把檔案搬進專案的文件目錄；docx 補完圖片後也由使用者決定放哪。
 
 ## `qa-report.md`
 
 ```markdown
-## 第 N 輪 — YYYY-MM-DD — 模式：需求 | 完整
+## 第 N 輪 — YYYY-MM-DD — 模式：需求 | 設計書 | 完整
 
 ### 閘門結果
 | 閘門 | 結果 | 數字 |
@@ -95,7 +131,7 @@ PG 端發現 requirements 有疑義時的**回流通道**，對應 `findings.md`
 ## Q1 — <一句話標題>
 
 Status: open | answered | withdrawn
-針對: Req 2.3
+針對: Req 2.3（或 SD 的某功能段落，例：SD「例稿轉入」）
 提問於: design 階段，基於 requirements rev 2
 阻斷: 是 | 否
 日期: YYYY-MM-DD
@@ -239,11 +275,14 @@ Spec 任務: 任務 1.3（S2）
 
 | Skill | 可寫 | 不可寫 |
 |---|---|---|
-| shan-grill | `grill.md`、`req-questions.md`（只追加新疑義） | 其餘（讀 `requirements-in/`） |
+| shan-grill | `grill.md`、`req-questions.md`（只追加新疑義） | 其餘（讀 `handoff-in/`） |
 | shan-grill-sa | `grill.md` | 其餘（讀 `req-questions.md`） |
-| shan-to-req | `spec-draft/requirements.md`、`req-questions.md`（只填「SA 答覆」與 `Status`） | 其餘（讀 `grill.md`） |
-| shan-to-spec | `spec-draft/`、`req-questions.md`（只追加新疑義） | 其餘（讀 `requirements-in/`、`grill.md`、`findings.md`）；**不得改動 `requirements.md` 內容** |
-| shan-spec-qa | `qa-report.md`、`spec-draft/`（修訂 design / tasks；需求模式下修訂 requirements）、`issues/`、`findings.md`、`req-questions.md`（只追加新疑義） | `session-map.md`、`review-*`；完整模式下不得改 `requirements.md` |
+| shan-to-sa | `doc-draft/<名稱>_SA.md` | 其餘（讀 `grill.md`） |
+| shan-to-docx | `doc-draft/` 下的 `.docx`（只新增，不覆蓋） | 其餘（讀 `doc-draft/` 的 md 與 config 指向的對應檔） |
+| shan-to-req | `spec-draft/requirements.md`、`req-questions.md`（只填「SA 答覆」與 `Status`） | 其餘（讀 `grill.md`、`doc-draft/` 的 SA 文件） |
+| shan-to-sd | `doc-draft/<名稱>_SD.md`（新建；修訂時另存 `-v<Rev>` 新檔，不就地覆蓋）、`req-questions.md`（只追加新疑義，`提問於` 寫「系統設計階段」） | 其餘（讀 `grill.md`、`spec-draft/` 或 `handoff-in/` 的 requirements、`doc-draft/` 的 SA 文件） |
+| shan-to-spec | `spec-draft/`、`req-questions.md`（只追加新疑義） | 其餘（讀 `handoff-in/`、`grill.md`、`findings.md`）；**不得改動 `requirements.md` 與 SD 的內容** |
+| shan-spec-qa | `qa-report.md`、`spec-draft/`（修訂 design / tasks；需求模式下修訂 requirements）、`issues/`、`findings.md`、`req-questions.md`（只追加新疑義） | `session-map.md`、`review-*`；完整模式下不得改 `requirements.md` 與 SD |
 | shan-plan | `session-map.md` | 其餘（讀 `qa-report.md`、`findings.md`、`issues/`） |
 | shan-implement | `findings.md`、`issues/`、`session-map.md` 的修訂記錄、`review-S<X>.md` | `grill.md`、`spec-draft/` |
 | shan-code-review（fork 內） | **無**——只回報 | 全部 |

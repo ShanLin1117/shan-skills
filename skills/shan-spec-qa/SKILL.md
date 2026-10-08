@@ -1,6 +1,6 @@
 ---
 name: shan-spec-qa
-description: 對 spec 文件本身做品質保證——格式閘門、識別字存在性查核、機械驗證、對抗式語意審查。分兩種模式：SA 端審 requirements（能不能交給 PG），完整模式審整份 spec（含 design／tasks 是否忠於 SA 的 requirements）。當 spec 初稿寫完或修訂完、準備交付或拿去實作時使用；使用者說「審查 spec」「spec 檢查」「spec 寫完了」「幫我看一下 requirements / design / tasks」「spec 可以開工了嗎」「shan-spec-qa」也觸發。這是查 spec 文件本身的正確性——查實作是否符合 spec 用 shan-code-review，切開發計畫用 shan-plan，照 spec 實作用 shan-implement。
+description: 對 spec 文件本身做品質保證——格式閘門、識別字存在性查核、機械驗證、對抗式語意審查。分三種模式：需求模式（SA 端審 requirements 能不能交給 PG）、設計書模式（SA 端審系統設計書 SD 是否忠於 requirements 且不與 codebase 現況衝突）、完整模式（PG 端審整份 spec，含 design／tasks 是否忠於 requirements 與 SD）。當 spec 初稿寫完或修訂完、準備交付或拿去實作時使用；使用者說「審查 spec」「spec 檢查」「spec 寫完了」「幫我看一下 requirements / design / tasks」「spec 可以開工了嗎」「shan-spec-qa」也觸發。這是查 spec 文件本身的正確性——查實作是否符合 spec 用 shan-code-review，切開發計畫用 shan-plan，照 spec 實作用 shan-implement。
 disable-model-invocation: true
 ---
 
@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 spec 文件的品質保證。它站在「spec 產生」與「下一個人接手」之間——誰寫的初稿都行（`shan-to-req`、`shan-to-spec`、外部工具、手寫），**但初稿不是交付物**。
 
-團隊流程下它守兩道交接：**SA → PG**（requirements 能不能交出去）與 **PG → 開發**（design／tasks 是否忠於 requirements）。兩道用同一支 skill，靠模式區分。
+團隊流程下它守兩道交接：**SA → PG**（requirements 與 SD 能不能交出去）與 **PG → 開發**（design／tasks 是否忠於 requirements 與 SD）。用同一支 skill，靠模式區分。
 
 全程繁體中文（台灣用語）輸出。
 
@@ -39,12 +39,13 @@ spec 的錯誤會被**完整放大**到實作。而 spec 的問題有兩種，�
 
 | 條件 | 模式 | 守哪一道 |
 |---|---|---|
-| config A 節的角色輪廓是 `sa`，或 `spec-draft/` 只有 `requirements.md` | **需求模式** | SA → PG：requirements 能不能交出去 |
-| `spec-draft/` 有 design／tasks | **完整模式** | PG → 開發：整份 spec 是否自洽、且忠於 requirements |
+| 審的是 `requirements.md`（`spec-draft/` 只有它，或使用者指定） | **需求模式** | SA → PG：requirements 能不能交出去 |
+| 審的是 `doc-draft/` 的 `<名稱>_SD.md`（config A 節「系統設計書」為「有」） | **設計書模式** | SA → PG：SD 是否忠於 requirements、不與現況衝突 |
+| `spec-draft/` 有 design／tasks | **完整模式** | PG → 開發：整份 spec 是否自洽、且忠於 requirements 與 SD |
 
 判定不明確就問使用者，不要猜。模式寫進 `qa-report.md` 該輪標題。
 
-**需求模式不跑下面的閘門 2、3、4 原文**，改跑「需求模式的閘門」一節；閘門 1 的格式比對照跑（只比 requirements 的部分，加上 `## Release Info`）。以下各閘門描述的是完整模式。
+**需求模式與設計書模式不跑下面的閘門 2、3、4 原文**，分別改跑「需求模式的閘門」與「設計書模式的閘門」；閘門 1 的格式比對照跑（只比 requirements 的部分，加上 `## Release Info`）。以下各閘門描述的是完整模式。
 
 ---
 
@@ -106,7 +107,7 @@ spec 的錯誤會被**完整放大**到實作。而 spec 的問題有兩種，�
 |---|---|
 | 編號連續性 | 抽出所有需求／任務編號 → 檢查有無斷號 |
 | 交叉引用完整性 | 抽出任務的回指編號集合 A、需求的實際編號集合 B → `A - B` 必須為空（引用了不存在的條文） |
-| 需求涵蓋率 | `B - A` 就是未被任何任務涵蓋的需求 |
+| 需求涵蓋率 | `B - A` 就是未被任何任務涵蓋的需求（B 不含標「已移除」的墓碑） |
 | 死術語 | 詞彙表定義了但全文再沒出現的詞 |
 | 必要章節 | 契約的必要標題 − 文件實際標題 |
 
@@ -125,13 +126,16 @@ requirements 是 SA 的契約，PG 端的 spec 必須**忠於它**。逐項實�
 | 檢查 | 作法 | 失敗的意思 |
 |---|---|---|
 | 已簽出 | `requirements.md` 的 `Status` 為 `released` | 需求還沒簽出就在做設計 |
-| 未被動過 | 若有 `requirements-in/requirements.md`，與 `spec-draft/requirements.md` 做 `diff`，必須為空 | PG 改了 SA 的需求。這是**阻斷級**——改回去，要改走 `req-questions.md` |
-| rev 一致 | design（或 tasks）`**Based on:** requirements rev N` 的 N 等於 requirements 的 `Rev` | 設計落後於需求。列出落差 rev 的 `Change Log` 每一則，逐項確認 design 決策與任務是否已跟上 |
+| 未被動過 | 若有 `handoff-in/requirements.md`（與 SD 的 md），分別與 `spec-draft/` 裡的副本做 `diff`，必須為空 | PG 改了 SA 的需求或設計書。這是**阻斷級**——改回去，要改走 `req-questions.md` |
+| rev 一致 | design（或 tasks）`**Based on:**` 記的 requirements rev（與 SD rev）等於兩者目前的 `Rev`；SD 的 `Based on` 也等於 requirements 目前的 `Rev` | 設計落後於需求或 SD。列出落差 rev 的 `Change Log` 每一則，逐項確認 design 決策與任務是否已跟上 |
+| SD 已簽出 | 有 SD 時，其 `Status` 為 `released` | 在未簽出的設計書上做設計。只有 docx 的降級情形：報告註明「無法比對 rev」，其餘照跑 |
+| SD 不被重寫 | design 對 SD 已定事項（資料表、DDL、URL、流程）是引用而非另寫一套；沒有與 SD 矛盾的陳述 | design 悄悄推翻或複製了 SD。矛盾以 SD 為準，該退回就走 `req-questions.md` |
+| SD 項目有任務 | 列出 SD 的每項 DB 變更、URL 規格、檔案異動，逐項確認 tasks 至少有一個任務涵蓋 | SD 規定要做的事沒人排進任務 |
 | 墓碑不被引用 | 標「已移除」的需求，沒有任何任務回指它 | 在做已被撤掉的需求 |
 | 設計決策有出處 | design 每個決策都有 `serves Req X.Y`，且該編號存在、未移除 | 決策在服務不存在的需求 |
 | 疑義已交代 | `req-questions.md` 沒有 `阻斷＝是` 且 `open` 的項目；`阻斷＝否` 的在 design 有「待確認」標記 | 設計建在未解的疑義上 |
 
-沒有 `requirements-in/`（單人流程）時，「未被動過」改成確認 `Status` 與 `Rev` 合理即可，並在 `qa-report.md` 註明。
+沒有 `handoff-in/`（單人流程）時，「未被動過」改成確認 `Status` 與 `Rev` 合理即可，並在 `qa-report.md` 註明。
 
 ---
 
@@ -176,7 +180,7 @@ requirements 是 SA 的契約，PG 端的 spec 必須**忠於它**。逐項實�
 
 > 形狀：需求寫「所有角色」，設計的權限模型只留兩種角色；需求要求「保留已刪除項目 30 天」，任務只實作軟刪除而沒有清理期限的語意。
 
-找法：審查者**同時拿 requirements 與 design／tasks**，逐條驗收條件問「照這份設計與任務做出來，這一條成立嗎？」。發現屬於 **requirements 本身的問題**（含糊、矛盾）時，**不要由 PG 修**——寫進 `req-questions.md`。
+找法：審查者**同時拿 requirements、SD（若有）與 design／tasks**，逐條驗收條件問「照這份設計與任務做出來，這一條成立嗎？」；也問「SD 規定的流程與 DDL，tasks 有照做嗎？」。發現屬於 **requirements 或 SD 本身的問題**（含糊、矛盾）時，**不要由 PG 修**——寫進 `req-questions.md`。
 
 ### 收到審查報告後
 
@@ -244,6 +248,57 @@ requirements 不該有技術實作。抽出 backtick 包起來的識別字、檔
 
 ---
 
+## 設計書模式的閘門
+
+守 SA → PG 這道交接的另一半：系統設計書（SD）。標準：**PG 照這份 SD 做，行為會符合 requirements，而且不會撞到 codebase 現況。**
+
+### D1：格式
+
+同閘門 1，對照 config A 節「系統設計書」的格式契約。另驗 `## Release Info` 欄位齊全（`Status` 此時應為 `draft`，有 `Rev`、`Based on`、當前 rev 的 `Change Log`），以及契約固定項：每個功能段落有 `對應需求` 行。
+
+### D2：現況查證
+
+同閘門 2，對象是 SD 提到的每個資料表、欄位、型別、既有 URL、既有 service。依 config **C 節 / A 節「codebase 參考路徑」**實際查證，分類同閘門 2。額外兩項：
+
+- SD 的 `ALTER`／新增是否與現況衝突（欄位已存在、型別不一致、命名撞到）
+- DDL 的前置條件是否成立（例如改型別前假設的資料狀態）
+
+**沒有 codebase 參考路徑時，這道標「未驗：無可查證的 codebase」**，不要用猜的通過。
+
+### D3：機械
+
+| 檢查 | 作法 |
+|---|---|
+| 需求涵蓋 | 抽出 requirements 的 Req 編號集合 B（排除「已移除」墓碑），SD 所有 `對應需求` 行的編號集合 A；`B − A` 逐條必須在 SD 明寫「不涉及設計變更」，否則是漏接 |
+| 引用有效 | `A − B` 必須為空（SD 引用了不存在或已移除的需求） |
+| requirements 已簽出 | requirements 的 `Status` 為 `released` | 在未簽出的需求上寫 SD（手寫的 SD 不會被 `shan-to-sd` 的前置檢查擋住，這裡補上） |
+| rev 綁定 | SD 的 `Based on` 等於 requirements 目前的 `Rev`；落後則列出 requirements `Change Log` 的落差項，逐項確認 SD 是否跟上 |
+| 表格完整 | 欄位對照表、URL 規格表的每列欄數與表頭一致，沒有空儲存格卻沒說明 |
+| Change Log | 與上一版（若有）逐項核對，列的和實際動到的一致 |
+
+### D4：對抗式語意審查
+
+鐵則同閘門 4：**獨立審查者、`run_in_background: false`、prompt 只放成品**——SD 路徑、requirements 路徑、codebase 參考路徑與 config C 節查核路徑、下面的問題類型、回報格式。**不給** `grill.md`。沒回來就標「未執行：<原因>」，不自己補審。
+
+審查者要找：
+
+- **① 與現況衝突**：DDL、欄位、URL 與 codebase 現有結構對不上；遺漏必要的資料轉換或 migration 順序
+- **② 多入口差異**：SD 描述了一個入口，系統實際還有第二、第三個（不同版本、批次／單筆、後台／API）做同一件事，差異沒列
+- **③ 行為落空**：requirements 的某條驗收條件，照 SD 的流程與資料模型無法成立
+- **④ 錯誤路徑與交易**：失敗時回復什麼、補償動作、部分成功的處置沒寫，或寫的順序會留下不一致狀態
+- **⑤ PG 會問什麼**：站在 PG 的位置讀一遍，列出他實作時一定會卡住、得回頭問 SA 的地方
+
+### 設計書模式的產出
+
+- `qa-report.md` 該輪標題寫「模式：設計書」，閘門列 D1–D4
+- **本模式不就地修改 `doc-draft/` 裡的 SD**（契約規定該目錄已存在就不覆蓋，且人工可能編輯過）。發現的問題寫進 `qa-report.md`，逐項附 SD 原文引用與建議修法；修訂交回 `shan-to-sd` 的修訂流程（它會另存新版、`Rev` +1、`Change Log` 追加、`Status` 回 `draft`）
+- 修訂後重跑本模式，直到 D1–D4 沒有阻斷級發現
+- 發現 **requirements 本身的問題**（含糊、矛盾、缺分支）：寫進 `req-questions.md`，不要在 SD 裡默默補
+- 需要 SA 拍板的取捨 → 開 `issues/` 票（`ready-for-human`）
+- **通過後告訴使用者**：由 SA 手動把 `Status` 改 `released`，搬進文件目錄並交給 PG。**本 skill 不代簽出**
+
+---
+
 ## 產出
 
 修訂後的 spec 文件本身就是主要產出。另外：
@@ -261,5 +316,5 @@ requirements 不該有技術實作。抽出 backtick 包起來的識別字、檔
 - 本 skill 只管 **spec 文件的正確性**，不做領域決策。
 - **MUST NOT 寫入正式 spec 目錄**（hook 強制）。修訂一律落草稿區，由使用者搬。
 - **完整模式下 MUST NOT 修改 `requirements.md`**，它是 SA 的契約。發現需求本身的問題，追加 `req-questions.md`，不要自己改。
-- **需求模式下 MUST NOT 把 `Status` 改成 `released`。**
+- **需求模式與設計書模式下 MUST NOT 把 `Status` 改成 `released`。**
 - **MUST NOT 為了讓閘門通過而放寬檢查**。涵蓋率不足就列出來交代，不要靠改需求編號讓數字好看。
