@@ -22,7 +22,11 @@ disable-model-invocation: true
 
 草稿區檔案的格式一律依 `${CLAUDE_SKILL_DIR}/../../docs/scratch-contract.md`（下稱**草稿區契約**）。
 
-**團隊流程下，需求已由 SA 定案**：`<草稿區>/<feature-slug>/handoff-in/requirements.md` 存在時（單人流程下沒有這個檔，則讀已簽出的 `spec-draft/requirements.md`），把它當**已知前提**讀完——它的 `Status` 要是 `released`，記下 `Rev`。這種審訊問的是**技術決策**（架構、資料模型、介面、測試 seam），**不重問需求**。需求本身含糊、矛盾或少分支時，不要在審訊裡替 SA 決定，改在 `req-questions.md` 追加一則疑義（格式見草稿區契約），並把依賴它的決策留在「待決」。
+**團隊流程下，需求已由 SA 定案**：`<草稿區>/<feature-slug>/handoff-in/requirements.md` 存在時（單人流程下沒有這個檔，則讀已簽出的 `spec-draft/requirements.md`），把它當**已知前提**讀完——它的 `Status` 要是 `released`，記下 `Rev`。config A 節「系統設計書」為「有」時，`handoff-in/` 還會有 `<名稱>_SD.md`（或 docx，用 `${CLAUDE_SKILL_DIR}/../../scripts/docx/docx_dump.py` 讀），同樣當**已知前提**：SD 已定的資料表、DDL、URL、流程契約**不重議**。
+
+這種審訊問的是**SD 之下的實作決策**（架構、模組切分、測試 seam、SD 沒覆蓋的部分），**不重問需求、不推翻 SD**。需求或 SD 本身含糊、矛盾或少分支時，不要在審訊裡替 SA 決定，改在 `req-questions.md` 追加一則疑義（格式見草稿區契約），並把依賴它的決策留在「待決」。
+
+**系統設計階段（SA 端、產 SD 之前）也用這支。** 輸入是簽出的 requirements 與需求分析書，問的是系統設計決策（資料表與欄位、DDL、URL、流程與交易邊界、畫面異動），事實查核走 config **C 節 / A 節「codebase 參考路徑」**（唯讀）。決策標題加 `[設計]` 標籤，**接續**既有 `grill.md` 的編號（先前的 `[業務]` 決策不動）。定案後下一步是 `/shan-skills:shan-to-sd`。
 
 ---
 
