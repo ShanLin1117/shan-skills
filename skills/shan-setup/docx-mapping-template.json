@@ -1,0 +1,23 @@
+{
+  "_說明": "寫進專案的 docx 對應檔（每種 docx 一份，例如 SA 一份、SD 一份）。JSON 不支援註解，所以用 _ 開頭的欄位說明，腳本會忽略它們。",
+  "_template": "Word 範本路徑，相對於本檔所在目錄或絕對路徑。轉換以它為底，頁首、頁尾、樣式都保留，只換內文。",
+  "template": "<例：../templates/需求分析報告書-範本.docx>",
+  "_styles": "markdown 元素 → 範本裡的 Word 樣式名稱。h1–h4 是 # 到 #### 標題（更深的標題併入 h4），body 是一般段落。bullet、code、table 省略時用 List Paragraph、Normal、Table Grid。",
+  "styles": {
+    "h1": "<例：3-JUD-小標0-一>",
+    "h2": "<例：3-JUD-小標1-(一)>",
+    "h3": "<例：3-JUD-小標2-1.>",
+    "h4": "<例：3-JUD-小標3-(1)>",
+    "body": "<例：4-JUD-小標2&3-內文(不縮排)>",
+    "bullet": "List Paragraph",
+    "code": "Normal",
+    "table": "Table Grid"
+  },
+  "_skip_sections": "整段略過的章節標題（含其下所有內容，到下一個同級或更高階標題為止）。用來擋掉 Release Info 這類內部資訊，客戶版不該出現。",
+  "skip_sections": ["Release Info"],
+  "_drop_line_patterns": "符合這些 regex 的行整行濾掉。用來擋掉「對應需求」這類內部追溯行。",
+  "drop_line_patterns": ["^\\*\\*對應需求\\*\\*"],
+  "code_font": "Consolas",
+  "image_placeholder": "【請貼上圖片：{alt}】",
+  "image_width_cm": 15
+}

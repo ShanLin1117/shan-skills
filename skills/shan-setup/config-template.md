@@ -25,6 +25,10 @@
 - **Spec 檔案**：`<例：requirements.md / design.md / tasks.md>`
 - **格式契約**：`<指向專案內的契約檔，例：docs/specs/SPEC-FORMAT.md>`
 - **寫入方式**：skill 一律先寫草稿到草稿區，經使用者核可後才進 Spec 目錄
+- **交接物**（團隊流程才需要；沒用到的寫「不適用」，skill 看這裡決定要不要走那一段）：
+  - **需求分析書**：命名 `<例：<功能名稱>_SA>`；格式契約 `<例：docs/specs/SA-FORMAT.md>`；docx 對應檔 `<例：docs/specs/docx-mapping-SA.json>`
+  - **系統設計書（SD）**：`有` | `無`；命名 `<例：<功能名稱>_SD>`；格式契約 `<例：docs/specs/SD-FORMAT.md>`；docx 對應檔 `<例：docs/specs/docx-mapping-SD.json>`
+  - **codebase 參考路徑**（唯讀）：`<例：D:/dev/xxx-backend；SA 不在程式專案下作業時填這個；沒有就寫「由 prompt 指定」>`
 - **受保護路徑**（與 `.shan/guard.yaml` 一致；hook 會拒絕寫入）：
   - `<例：docs/specs/**/requirements.md、design.md — 已核可的規格>`
   - `<例：db/migration/V*.sql — 已套用的 migration>`
@@ -118,4 +122,5 @@ skill 執行時最常踩到的幾條。完整清單見 `<指向 CLAUDE.md 或等
 - [ ] A 節的受保護路徑與 `.shan/guard.yaml` 的 `protected_paths` / `allowed_paths` 一致
 - [ ] 沒有任何一行是「一個指令就查得到的當下狀態」（版號、檔案數、目錄清單）
 - [ ] 格式契約指向**專案內**的檔案，不是把契約內容複製進來
+- [ ] 交接物欄位：用到的有值，沒用到的寫「不適用」；docx 對應檔裡的範本路徑真的存在
 - [ ] 護欄那節只放最常踩的幾條，不是把 CLAUDE.md 整份搬過來

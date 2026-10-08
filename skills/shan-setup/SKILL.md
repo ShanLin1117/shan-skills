@@ -21,11 +21,13 @@ disable-model-invocation: true
 | 輪廓 | 是什麼 | 用到的 skill |
 |---|---|---|
 | `pg`（預設） | 程式專案：有 codebase、測試、commit 慣例 | grill、to-spec、spec-qa、plan、implement、code-review |
-| `sa` | SA 的文件專案：存放 SA 文件、需求規格書、需求分析書，沒有程式碼 | grill-sa、to-req、spec-qa（需求模式） |
+| `sa` | SA 的文件專案：存放需求分析書、需求規格書等文件，通常不是程式專案 | grill-sa、to-sa、to-docx、to-req、to-sd、spec-qa（需求模式與設計書模式） |
 
 寫進 config A 節的「角色輪廓」。**單人從需求做到實作的專案選 `pg`**——它涵蓋全鏈。
 
 `sa` 輪廓的差異，後面各步驟另有標示：只探索文件、只填 **A、B、C、H、I** 五節，**D、E、F、G 寫「不適用」**；不產 `guard.yaml` 的 git 區段（沒有 commit 慣例要護）。
+
+`sa` 輪廓的 repo 不一定看得到程式碼，但 SA 做系統設計時要參考。C 節與 A 節的「codebase 參考路徑」記下**唯讀**的程式專案位置；沒有固定位置就寫「由 prompt 指定」，skill 會要求使用者在對話中指出。
 
 ---
 
@@ -57,7 +59,9 @@ disable-model-invocation: true
 
 **`sa` 輪廓改探索這些**（取代上面的建置／測試／commit 等項目）：
 
-- **文件目錄**：SA 文件、需求規格書、需求分析書、客戶問題單各放哪；有沒有編號或命名慣例
+- **文件目錄**：需求分析書、需求規格書、客戶問題單各放哪；有沒有編號或命名慣例
+- **Word 範本**：有沒有需求分析書、系統設計書的 `.docx` 範本；有就進入下面的「docx 對應」流程
+- **codebase 參考路徑**：使用者提到的程式專案位置（唯讀）
 - **既有 requirements 的長相**：已有的 requirements.md 或等價文件，用什麼標題與句式；沒有就用預設格式（見 A 節）
 - **詞彙來源**：有沒有 glossary、專有名詞表
 - **Remote**：同上，決定對外動作的預設姿態
@@ -91,6 +95,20 @@ disable-model-invocation: true
 3. **全新專案** → 用 [spec-format-default.md](./spec-format-default.md)，把它複製進專案（預設 `docs/specs/SPEC-FORMAT.md`），config 指向它
 
 無論哪一種，**契約要住在專案裡**，config 只負責指路。這樣它跟著 repo 走，而不是跟著 skill 走。
+
+### A — 交接物與 docx 對應（團隊流程）
+
+問清楚這個團隊的流程有哪些交接物，**別預設有**：
+
+1. **需求分析書**：有沒有？命名規則？格式契約——沿用專案既有的，或用 [sa-format-default.md](./sa-format-default.md) 複製進專案（預設 `docs/specs/SA-FORMAT.md`）
+2. **系統設計書（SD）**：有沒有這個階段？有的話同樣處理格式契約，預設樣板 [sd-format-default.md](./sd-format-default.md)。**沒有 SD 階段的團隊寫「無」**，skill 會跳過整段
+3. **docx 對應**：需求分析書、SD 各要輸出 docx 嗎？要的話，每種 docx 做一份對應檔（樣板 [docx-mapping-template.json](./docx-mapping-template.json)，複製進專案）：
+   - 用 `python -X utf8 ${CLAUDE_SKILL_DIR}/../../scripts/docx/docx_dump.py <範本.docx>` 傾印範本，**看範本實際用了哪些樣式**（各層標題、內文）
+   - 把 md 的 `#`～`####` 與範本樣式的對應攤給使用者確認，**樣式名稱以範本為準，不要憑印象**
+   - 內部資訊（`Release Info`、`對應需求`）列進 `skip_sections` / `drop_line_patterns`，客戶版不該出現
+   - 跑一次 `md_to_docx.py` 試轉，確認樣式都找得到（找不到它會報錯並列出範本現有樣式）
+
+這幾項全部寫進 config A 節的「交接物」。單人流程、沒有 docx 需求的專案，整段寫「不適用」。
 
 ### A — SA 端的受保護路徑
 
