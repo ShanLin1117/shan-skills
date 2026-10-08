@@ -125,13 +125,13 @@ requirements 是 SA 的契約，PG 端的 spec 必須**忠於它**。逐項實�
 | 檢查 | 作法 | 失敗的意思 |
 |---|---|---|
 | 已簽出 | `requirements.md` 的 `Status` 為 `released` | 需求還沒簽出就在做設計 |
-| 未被動過 | 若有 `requirements-in/requirements.md`，與 `spec-draft/requirements.md` 做 `diff`，必須為空 | PG 改了 SA 的需求。這是**阻斷級**——改回去，要改走 `req-questions.md` |
+| 未被動過 | 若有 `handoff-in/requirements.md`，與 `spec-draft/requirements.md` 做 `diff`，必須為空 | PG 改了 SA 的需求。這是**阻斷級**——改回去，要改走 `req-questions.md` |
 | rev 一致 | design（或 tasks）`**Based on:** requirements rev N` 的 N 等於 requirements 的 `Rev` | 設計落後於需求。列出落差 rev 的 `Change Log` 每一則，逐項確認 design 決策與任務是否已跟上 |
 | 墓碑不被引用 | 標「已移除」的需求，沒有任何任務回指它 | 在做已被撤掉的需求 |
 | 設計決策有出處 | design 每個決策都有 `serves Req X.Y`，且該編號存在、未移除 | 決策在服務不存在的需求 |
 | 疑義已交代 | `req-questions.md` 沒有 `阻斷＝是` 且 `open` 的項目；`阻斷＝否` 的在 design 有「待確認」標記 | 設計建在未解的疑義上 |
 
-沒有 `requirements-in/`（單人流程）時，「未被動過」改成確認 `Status` 與 `Rev` 合理即可，並在 `qa-report.md` 註明。
+沒有 `handoff-in/`（單人流程）時，「未被動過」改成確認 `Status` 與 `Rev` 合理即可，並在 `qa-report.md` 註明。
 
 ---
 

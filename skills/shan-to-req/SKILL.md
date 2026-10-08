@@ -108,7 +108,7 @@ disable-model-invocation: true
 4. 告訴使用者下一步，**三步，順序固定**：
    1. 跑 `/shan-skills:shan-spec-qa`（會自動走需求模式）
    2. 通過後**由 SA 手動**把 `Status` 改成 `released`、填 `Released` 日期——這是簽出，skill 不代做
-   3. **由 SA** 把 `requirements.md` 搬進 config A 節的 spec 目錄，並把同一份檔案交給 PG（PG 放進自己草稿區的 `requirements-in/`）
+   3. **由 SA** 把 `requirements.md` 搬進 config A 節的 spec 目錄，並把同一份檔案交給 PG（PG 放進自己草稿區的 `handoff-in/`）
 
 **MUST NOT 直接寫入 spec 目錄。** 那道搬遷動作是人工核可閘門，hook 也會擋。
 

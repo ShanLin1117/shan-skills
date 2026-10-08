@@ -34,7 +34,7 @@ SA 的文件專案（setup 選 sa 輪廓）                   PG 的程式專案
 shan-grill-sa → shan-to-req → shan-spec-qa(需求模式)
                        │            │
                        │      SA 手動簽出 Status: released
-                       └─────→ requirements.md ──交付──→ requirements-in/
+                       └─────→ requirements.md ──交付──→ handoff-in/
                                                          shan-grill(技術決策) → shan-to-spec(design+tasks)
                                                          → shan-spec-qa(完整模式) → shan-plan → …
                      ←──── req-questions.md（PG 的疑義退回 SA）────
@@ -43,7 +43,7 @@ shan-grill-sa → shan-to-req → shan-spec-qa(需求模式)
 - **簽出是人的動作**：`Status` 由 SA 手動翻成 `released`，skill 不代簽
 - **需求變更走 rev**：改一個字就 `Rev` +1、`Change Log` 追加；PG 依 Change Log 修訂 design 與 tasks，不比對全文
 - **PG 不改 requirements**：有疑義寫 `req-questions.md` 退回，`spec-qa` 會逐字比對 PG 手上的 requirements 有沒有被動過
-- **單人流程不受影響**：同一個 repo、同一個人，依序跑 `grill-sa → to-req → spec-qa → （自己簽出）→ grill → to-spec → spec-qa → …`。找不到 `requirements-in/` 時，`shan-grill` 與 `shan-to-spec` 會改讀已簽出的 `spec-draft/requirements.md`
+- **單人流程不受影響**：同一個 repo、同一個人，依序跑 `grill-sa → to-req → spec-qa → （自己簽出）→ grill → to-spec → spec-qa → …`。找不到 `handoff-in/` 時，`shan-grill` 與 `shan-to-spec` 會改讀已簽出的 `spec-draft/requirements.md`
 
 細節見 [docs/scratch-contract.md](./docs/scratch-contract.md)。
 

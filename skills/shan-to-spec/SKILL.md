@@ -18,9 +18,9 @@ disable-model-invocation: true
 
 1. **`.shan/config.md`** —— 缺就告訴使用者跑 `/shan-skills:shan-setup`；首行不是 `<!-- shan-config: v2 -->` 就提示一次「config 是舊版」，以現有內容繼續
 2. **格式契約** —— config **A 節**指向的那份，**只取 design 與 tasks 的部分**。標題、必要章節、生成標頭一律以它為準，本 skill 不重述任何模板
-3. **requirements（輸入，唯讀）** —— `<草稿區>/<feature-slug>/requirements-in/requirements.md`。
+3. **requirements（輸入，唯讀）** —— `<草稿區>/<feature-slug>/handoff-in/requirements.md`。
    - 沒有這個檔，但 `spec-draft/requirements.md` 存在且已 `released`：單人流程（SA 與 PG 是同一人），改讀它，並在交付時註明
-   - 都沒有：**停下來**，告訴使用者需求要先由 `shan-grill-sa` → `shan-to-req` 產出並簽出，或把 SA 交付的檔放進 `requirements-in/`
+   - 都沒有：**停下來**，告訴使用者需求要先由 `shan-grill-sa` → `shan-to-req` 產出並簽出，或把 SA 交付的檔放進 `handoff-in/`
    - 讀 `## Release Info`：`Status` 不是 `released` 就**停下來**，要 SA 先簽出；記下 `Rev`
 4. **決策來源** —— `<草稿區>/<feature-slug>/grill.md`（PG 端 `shan-grill` 產的技術決策）。沒有就從當前對話綜合，交付時說明「本次沒有 grill 記錄，決策來自對話」
 5. **跨棒事實** —— `findings.md`（若存在；格式見草稿區契約）。前一輪實作查證出來、spec 該吸收的事實

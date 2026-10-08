@@ -35,9 +35,9 @@
 | SA | `shan-to-req` | `grill.md` | `spec-draft/requirements.md`（`Status: draft`） |
 | SA | `shan-spec-qa`（需求模式） | requirements 草稿 | 修訂後的 requirements + `qa-report.md` |
 | SA | **手動簽出** | | `Status: released`、填 `Released`，搬進 spec 目錄，把檔案交給 PG |
-| PG | **手動放入** | SA 交付的檔 | `requirements-in/requirements.md` |
-| PG | `shan-grill` | `requirements-in/` + codebase | `grill.md`（技術決策）；需求有疑義則寫 `req-questions.md` |
-| PG | `shan-to-spec` | `requirements-in/` + `grill.md` | `spec-draft/` 三份：requirements 原樣副本 + design + tasks |
+| PG | **手動放入** | SA 交付的檔 | `handoff-in/requirements.md` |
+| PG | `shan-grill` | `handoff-in/` + codebase | `grill.md`（技術決策）；需求有疑義則寫 `req-questions.md` |
+| PG | `shan-to-spec` | `handoff-in/` + `grill.md` | `spec-draft/` 三份：requirements 原樣副本 + design + tasks |
 | PG | `shan-spec-qa`（完整模式） | 三份 spec | 含閘門 3b 交接檢查：requirements 沒被動過、rev 對得上 |
 | PG | **手動搬進 spec 目錄** → `shan-plan` → `shan-implement` → `shan-code-review` | | 同單人流程 |
 
@@ -45,7 +45,7 @@
 
 ```
 SA   shan-grill-sa（只問這次改什麼） → shan-to-req（Rev+1、Change Log 追加） → spec-qa → 簽出 → 交付新檔
-PG   換掉 requirements-in/ → shan-to-spec 進修訂流程：
+PG   換掉 handoff-in/ → shan-to-spec 進修訂流程：
        讀落差 rev 的 Change Log，逐項找受影響的決策與任務
        未勾選的任務改寫；已勾選的不動、另加新任務並開票
        Based on 更新 → shan-spec-qa → 重跑 shan-plan（讀修訂記錄、保留已完成棒次）

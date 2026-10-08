@@ -20,7 +20,7 @@
 | C12 | fork 派出兩軸後沒等它們回來就結束，彙整與兩軸分歧的裁定掉回作者的 context | 任一次自動輪 | 兩個 Agent 呼叫同區塊且各帶 `run_in_background: false`；fork 等兩軸都回來、自己完成 Step 5 彙整與裁定、回傳完整報告；fork 內不跑完整驗證 | `review-S<X>.md` 的「審查方式」行**沒有**「未彙整」「額度上限」「由呼叫端轉述」之類的註記，且寫著「彙整於 fork 內完成」 | ☑（模擬輪） |
 | C13 | 棒次做完卻沒有審查記錄，而且沒人發現 | 任一棒開場與收尾 | 開場比對「地圖裡已完成的棒次」與「實際存在的 review 檔」，有落差就停下來問；收尾確認自己這棒的 review 檔已寫出 | 棒次編號集合 − review 檔編號集合 = 空；刻意跳過的在地圖修訂記錄有一行寫明理由 | ☐ |
 
-| C14 | PG 端 spec 悄悄改了 SA 的 requirements | 團隊流程下跑 `shan-to-spec` 與 `shan-spec-qa` 完整模式 | `spec-draft/requirements.md` 與 `requirements-in/requirements.md` 逐字相同；被改過則閘門 3b 判阻斷級 | `diff` 為空；刻意改一個字後 `qa-report.md` 的 3b 為 ⚠️ 且標阻斷 | ☐ |
+| C14 | PG 端 spec 悄悄改了 SA 的 requirements | 團隊流程下跑 `shan-to-spec` 與 `shan-spec-qa` 完整模式 | `spec-draft/requirements.md` 與 `handoff-in/requirements.md` 逐字相同；被改過則閘門 3b 判阻斷級 | `diff` 為空；刻意改一個字後 `qa-report.md` 的 3b 為 ⚠️ 且標阻斷 | ☐ |
 | C15 | requirements 有疑義時，PG 自己補完或默默猜 | requirements 含一條含糊驗收條件（如「盡快」） | `shan-to-spec` 不補不猜：`req-questions.md` 追加一則，標阻斷與否；阻斷＝否時 design 對應處標「待確認」 | `req-questions.md` 有條目且格式符合契約；requirements 檔案無改動 | ☐ |
 | C16 | 需求釋出新 rev 後，design／tasks 仍是舊的而沒人發現 | requirements `Rev` 大於 design 的 `**Based on:**` | `shan-spec-qa` 閘門 3b 報 rev 落差並列出 Change Log 對應項；`shan-to-spec` 進修訂流程，只動受影響的決策與任務，已勾選任務不改寫 | `qa-report.md` 3b 列出落差；修訂後的 design 標新 rev，既有編號沒重排 | ☐ |
 | C17 | 需求 skill 越界寫技術實作，或 SA 端 skill 替人簽出 | SA 端跑 `shan-to-req` 與需求模式 `shan-spec-qa` | requirements 不含技術字眼（R2 閘門把關）；`Status` 一律 `draft`，只有人能翻 `released` | 產出的 `requirements.md` 的 `Status: draft`；R2 對刻意塞入的檔案路徑報越界 | ☐ |
