@@ -39,12 +39,12 @@ with tempfile.TemporaryDirectory() as tmp:
     with open(mapping, "w", encoding="utf-8") as f:
         json.dump({"template": "tpl.docx",
                    "styles": {"h1": "樣式H1", "h2": "樣式H2", "h3": "樣式H3", "h4": "樣式H4", "body": "樣式內文"},
-                   "skip_sections": ["Release Info"], "drop_line_patterns": ["^\*\*對應需求\*\*"]}, f)
+                   "skip_sections": ["Release Info"], "drop_line_patterns": [r"^\*\*對應需求\*\*"]}, f)
     md = os.path.join(tmp, "a.md")
     with open(md, "w", encoding="utf-8") as f:
         f.write("# 功能說明\n## 功能概述\n以文字概述 **重點**。\n\n- 項目一\n  - 子項\n\n"
                 "| 欄位 | 說明 |\n|---|---|\n| A | 甲 |\n\n```\nSELECT 1\n```\n\n"
-                "![畫面](不存在.png)\n\n## Release Info\n- **Status**: draft\n\n# 功能規格\n內文結尾\n")
+                "**對應需求**：Req 1.1\n![畫面](不存在.png)\n\n## Release Info\n- **Status**: draft\n\n# 功能規格\n內文結尾\n")
     out = os.path.join(tmp, "o.docx")
 
     r = run("md_to_docx.py", "--mapping", mapping, "--md", md, "--out", out)
@@ -57,7 +57,7 @@ with tempfile.TemporaryDirectory() as tmp:
     check("圖片缺檔以預留文字取代", "請貼上圖片：畫面" in dump, dump)
     check("skip_sections 略過整段", "Release Info" not in dump and "Status" not in dump, dump)
     check("略過後的下一個同級標題恢復輸出", "[樣式H1] 功能規格" in dump, dump)
-    check("drop_line_patterns 濾掉內部追溯行", "對應需求" not in dump, dump)
+    check("drop_line_patterns 濾掉內部追溯行", "對應需求" not in dump and "Req 1.1" not in dump, dump)
     check("範本頁首保留", docx.Document(out).sections[0].header.paragraphs[0].text == "範本頁首")
 
     r = run("md_to_docx.py", "--mapping", mapping, "--md", md, "--out", out)
