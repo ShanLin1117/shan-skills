@@ -16,7 +16,7 @@ SD 是 SA 交給 PG 的**設計契約**：DB 與介面的決定在這裡定案�
 
 ## Step 1：載入
 
-1. **`.shan/config.md`** —— 缺就告訴使用者跑 `/shan-skills:shan-setup`；首行不是 `<!-- shan-config: v2 -->` 就提示一次「config 是舊版」，以現有內容繼續。**A 節「系統設計書」若為「無」，告訴使用者這個專案沒有 SD 階段，停下**
+1. **`.shan/config.md`** —— 缺就告訴使用者跑 `/shan-skills:shan-setup`；首行不是 `<!-- shan-config: v2 -->` 就提示一次「config 是舊版」，以現有內容繼續。**A 節「系統設計書」若為「無」或欄位不存在，告訴使用者這個專案的 config 沒有啟用 SD 階段，停下；要用的話請他把該欄改成「有」（或跑 `shan-setup`）**
 2. **格式契約** —— config **A 節「交接物 → 系統設計書」**指向的那份。標題、章節、`對應需求` 行、`Release Info` 一律以它為準，本 skill 不重述模板
 3. **命名** —— 同一節的命名規則（例：`<功能名稱>_SD`）
 4. **requirements（輸入，唯讀）** —— `<草稿區>/<feature-slug>/spec-draft/requirements.md`（SA 端）或 `handoff-in/requirements.md`。讀 `## Release Info`：`Status` 不是 `released` 就**停下來**，SD 不能建在未簽出的需求上；記下 `Rev`

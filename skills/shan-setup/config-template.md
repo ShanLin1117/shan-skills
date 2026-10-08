@@ -27,7 +27,7 @@
 - **寫入方式**：skill 一律先寫草稿到草稿區，經使用者核可後才進 Spec 目錄
 - **交接物**（團隊流程才需要；沒用到的寫「不適用」，skill 看這裡決定要不要走那一段）：
   - **需求分析書**：命名 `<例：<功能名稱>_SA>`；格式契約 `<例：docs/specs/SA-FORMAT.md>`；docx 對應檔 `<例：docs/specs/docx-mapping-SA.json>`
-  - **系統設計書（SD）**：`有` | `無`；命名 `<例：<功能名稱>_SD>`；格式契約 `<例：docs/specs/SD-FORMAT.md>`；docx 對應檔 `<例：docs/specs/docx-mapping-SD.json>`
+  - **系統設計書（SD）**：`有` | `無`（**不分輪廓都要填**；欄位缺漏時 skill 視為「無」）；命名 `<例：<功能名稱>_SD>`；格式契約 `<例：docs/specs/SD-FORMAT.md>`；docx 對應檔 `<例：docs/specs/docx-mapping-SD.json>`
   - **codebase 參考路徑**（唯讀）：`<例：D:/dev/xxx-backend；SA 不在程式專案下作業時填這個；沒有就寫「由 prompt 指定」>`
 - **受保護路徑**（與 `.shan/guard.yaml` 一致；hook 會拒絕寫入）：
   - `<例：docs/specs/**/requirements.md、design.md — 已核可的規格>`

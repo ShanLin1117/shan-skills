@@ -25,7 +25,7 @@ disable-model-invocation: true
    - 都沒有：**停下來**，告訴使用者需求要先由 `shan-grill-sa` → `shan-to-req` 產出並簽出，或把 SA 交付的檔放進 `handoff-in/`
    - 讀 `## Release Info`：`Status` 不是 `released` 就**停下來**，要 SA 先簽出；記下 `Rev`
 4. **系統設計書（輸入，唯讀）** —— 看 config **A 節「系統設計書」**：
-   - 「無」：跳過
+   - 「無」或欄位不存在：跳過
    - 「有」：讀 `handoff-in/<名稱>_SD.md`（優先）或 `.docx`（用 `python -X utf8 ${CLAUDE_SKILL_DIR}/../../scripts/docx/docx_dump.py <檔案>` 傾印）。**沒有 SD 就停下來**，告訴使用者 SD 還沒到。讀它的 `## Release Info`：`Status` 非 `released` 就停下來；記下 SD 的 `Rev` 與 `Based on`。只有 docx 時沒有 Release Info，交付時註明「SD 為 docx，無法比對 rev」
    - SD 的 `Based on` 與 requirements 的 `Rev` 不一致：**停下來**，告訴使用者 SD 尚未跟上最新需求
 5. **決策來源** —— `<草稿區>/<feature-slug>/grill.md`（PG 端 `shan-grill` 產的技術決策）。沒有就從當前對話綜合，交付時說明「本次沒有 grill 記錄，決策來自對話」
