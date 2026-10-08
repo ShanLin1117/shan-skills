@@ -22,6 +22,8 @@ disable-model-invocation: true
 
 草稿區檔案的格式一律依 `${CLAUDE_SKILL_DIR}/../../docs/scratch-contract.md`（下稱**草稿區契約**）。
 
+**團隊流程下，需求已由 SA 定案**：`<草稿區>/<feature-slug>/requirements-in/requirements.md` 存在時（單人流程下沒有這個檔，則讀已簽出的 `spec-draft/requirements.md`），把它當**已知前提**讀完——它的 `Status` 要是 `released`，記下 `Rev`。這種審訊問的是**技術決策**（架構、資料模型、介面、測試 seam），**不重問需求**。需求本身含糊、矛盾或少分支時，不要在審訊裡替 SA 決定，改在 `req-questions.md` 追加一則疑義（格式見草稿區契約），並把依賴它的決策留在「待決」。
+
 ---
 
 ## Step 2：開場
@@ -133,7 +135,7 @@ disable-model-invocation: true
 
 1. 已敲定決策的清單（一行一條）
 2. 明確排除的範圍
-3. 一句話說明下一步：這份 `grill.md` 可以接 `/shan-skills:shan-to-spec`
+3. 一句話說明下一步：這份 `grill.md` 可以接 `/shan-skills:shan-to-spec`（團隊流程下前提是 `requirements-in/` 已有 SA 簽出的 requirements）
 
 未經使用者確認「我們的理解一致了」之前，**不要**依這些結論動手做任何事。
 
@@ -143,4 +145,5 @@ disable-model-invocation: true
 
 - **MUST NOT** 修改 spec 目錄下的文件（見 config A 節與 H 節；hook 會擋）。需求或設計要改，暫停並告知使用者。
 - **MUST NOT** 寫實作程式碼。審訊產出的是決策。
+- 業務規則與需求面的問題是 SA 的（`shan-grill-sa`）。使用者還沒有 requirements、是要從客戶需求開始問時，請他先找 SA 或自己切換到 SA 角色用 `shan-grill-sa`；單人流程不受影響。
 - 若某個問題非得跑起來才答得出來（狀態機、UI 手感），停下來告訴使用者這需要一個 prototype，由他決定要不要岔出去。

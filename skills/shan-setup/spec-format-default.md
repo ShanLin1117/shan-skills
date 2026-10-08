@@ -14,6 +14,8 @@
 
 小功能可以只寫 `requirements.md` + `tasks.md`，跳過 `design.md`——但別把設計決策塞進 requirements。
 
+**團隊流程下三份文件的作者不同**：`requirements.md` 是 SA 簽出的契約，`design.md` 與 `tasks.md` 是 PG 寫的。三份之間的交接機制（`## Release Info`、`**Based on:**`）見 shan-skills 的 `docs/scratch-contract.md`。
+
 ---
 
 ## 標題契約
@@ -37,11 +39,16 @@
 
 **User Story:** 身為 <角色>，我想要 <功能>，以便 <效益>
 
+**Rationale:** <選填：不顯而易見的業務規則為什麼是這樣；PG 看不到 SA 的審訊記錄，這行是理由唯一的傳遞管道>
+
 #### Acceptance Criteria
 
 1. WHEN <觸發條件> THEN <系統> SHALL <可觀察行為>
 2. IF <前置狀態> THEN <系統> SHALL <可觀察行為>
 3. WHERE <適用範圍> THE <系統> SHALL <可觀察行為>
+
+## Release Info
+<團隊流程交接區塊，格式見草稿區契約：Status / Rev / Released / Change Log>
 ```
 
 驗收條件用 **EARS** 句式（WHEN / IF / WHERE / WHILE + SHALL），一條一個可觀察行為。編號 `<需求編號>.<條件編號>` 是後續一切回指的錨點：測試名稱、commit footer、審查對照。
@@ -54,6 +61,7 @@
 # Design Document: <中文副標題>
 
 ## Overview
+<第一行：**Based on:** requirements rev N>
 ## Architecture
 ## Components and Interfaces
 ## Data Models

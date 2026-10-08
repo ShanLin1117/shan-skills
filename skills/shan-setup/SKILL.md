@@ -1,6 +1,6 @@
 ---
 name: shan-setup
-description: 在一個 repo 裡跑一次，探索它的技術棧、路徑、測試與 commit 慣例，寫出 .shan/config.md 與 .shan/guard.yaml 供其餘 shan-* skill 與 hook 讀取。當使用者說「設定 shan skills」「這個專案要怎麼接」「shan-setup」，或在新 repo 第一次要用 shan-grill / shan-to-spec / shan-plan / shan-implement / shan-code-review 卻還沒有 .shan/config.md，或 config 版本過舊時使用。
+description: 在一個 repo 裡跑一次，探索它的技術棧、路徑、測試與 commit 慣例（SA 的文件專案則探索文件目錄與需求格式），寫出 .shan/config.md 與 .shan/guard.yaml 供其餘 shan-* skill 與 hook 讀取。當使用者說「設定 shan skills」「這個專案要怎麼接」「shan-setup」，或在新 repo 第一次要用 shan-grill / shan-grill-sa / shan-to-req / shan-to-spec / shan-plan / shan-implement / shan-code-review 卻還沒有 .shan/config.md，或 config 版本過舊時使用。
 disable-model-invocation: true
 ---
 
@@ -11,6 +11,21 @@ disable-model-invocation: true
 這是一支**對話驅動**的 skill，不是腳本。先探索、把發現攤開、跟使用者確認，最後才寫檔。
 
 全程繁體中文（台灣用語）輸出。技術名詞、指令、路徑保留原文。
+
+---
+
+## Step 0：先問角色輪廓
+
+第一個問題：**這個 repo 是哪一種？**
+
+| 輪廓 | 是什麼 | 用到的 skill |
+|---|---|---|
+| `pg`（預設） | 程式專案：有 codebase、測試、commit 慣例 | grill、to-spec、spec-qa、plan、implement、code-review |
+| `sa` | SA 的文件專案：存放 SA 文件、需求規格書、需求分析書，沒有程式碼 | grill-sa、to-req、spec-qa（需求模式） |
+
+寫進 config A 節的「角色輪廓」。**單人從需求做到實作的專案選 `pg`**——它涵蓋全鏈。
+
+`sa` 輪廓的差異，後面各步驟另有標示：只探索文件、只填 **A、B、C、H、I** 五節，**D、E、F、G 寫「不適用」**；不產 `guard.yaml` 的 git 區段（沒有 commit 慣例要護）。
 
 ---
 
@@ -40,6 +55,13 @@ disable-model-invocation: true
 - **Remote**：`git remote -v` — 是公開平台還是客戶內網？這決定「發布」類動作預設要不要停下來問
 - **重疊的 skill**：掃 `.claude/skills/*/SKILL.md` 的 description，凡職責與 shan-* 重疊（產 spec、切 session、實作、審查）且**未設** `disable-model-invocation: true` 者，記下來——它們會在 shan-* 執行途中自動觸發、帶進相反的指引
 
+**`sa` 輪廓改探索這些**（取代上面的建置／測試／commit 等項目）：
+
+- **文件目錄**：SA 文件、需求規格書、需求分析書、客戶問題單各放哪；有沒有編號或命名慣例
+- **既有 requirements 的長相**：已有的 requirements.md 或等價文件，用什麼標題與句式；沒有就用預設格式（見 A 節）
+- **詞彙來源**：有沒有 glossary、專有名詞表
+- **Remote**：同上，決定對外動作的預設姿態
+
 已經存在 `.shan/config.md` 時，讀它，並把這次探索當成**更新**而不是重寫——保留使用者手改過的內容。第一行不是 `<!-- shan-config: v2 -->` 就是舊版，升級時保留內容、補齊 v2 新欄位。
 
 ---
@@ -52,7 +74,7 @@ disable-model-invocation: true
 
 | 節 | 何時需要問 |
 |---|---|
-| **A. 路徑與 spec 格式** | 專案沒有既成 spec 慣例時，確認要用預設格式（見下）還是別的；**受保護路徑**一定要確認 |
+| **A. 路徑與 spec 格式** | `sa` 輪廓時：「Spec 目錄」指 requirements 的輸出位置，「格式契約」只需涵蓋 requirements 與交接區塊。其餘：專案沒有既成 spec 慣例時，確認要用預設格式（見下）還是別的；**受保護路徑**一定要確認 |
 | **B. 領域文件讀取順序** | 哪些是「每棒必讀」、哪些是「依主題選讀」——流程性規範一律必讀 |
 | **C. 事實查核對照表** | 幾乎不用問，探索就能填 |
 | **D. 技術棧與指令** | 有多套建置路徑（本機 vs 容器）時，確認預設走哪條 |
@@ -69,6 +91,10 @@ disable-model-invocation: true
 3. **全新專案** → 用 [spec-format-default.md](./spec-format-default.md)，把它複製進專案（預設 `docs/specs/SPEC-FORMAT.md`），config 指向它
 
 無論哪一種，**契約要住在專案裡**，config 只負責指路。這樣它跟著 repo 走，而不是跟著 skill 走。
+
+### A — SA 端的受保護路徑
+
+`sa` 輪廓只保護**已釋出的 requirements**（`Status: released` 的檔所在位置）。改它要走新 rev 流程，不該被直接編輯。沒有 migration、steering 這類要護的東西。
 
 ### A — 受保護路徑（一定要確認）
 
@@ -104,7 +130,7 @@ disable-model-invocation: true
 
 ## Step 3：寫檔
 
-把草稿給使用者看過再寫。
+把草稿給使用者看過再寫。`sa` 輪廓的 `guard.yaml` 只填 `protected_paths`，`protected_existing_paths` 與 `git` 區段留空或省略。
 
 1. **`.shan/config.md`**：用 [config-template.md](./config-template.md) 當骨架，第一行必須是 `<!-- shan-config: v2 -->`
 2. **`.shan/guard.yaml`**：用 [guard-template.yaml](./guard-template.yaml) 當骨架，填 A 節的受保護路徑與 G 節的 git 政策。**寫完立刻生效**——hook 每次工具呼叫都會讀它，不需要重開 session
