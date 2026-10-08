@@ -19,6 +19,7 @@
 
 ## A. 路徑與 spec 格式
 
+- **角色輪廓**：`pg` | `sa`（省略視為 `pg`；`sa` 是 SA 的文件專案，D、E、F、G 節填「不適用」）
 - **草稿區**：`<例：.scratch/>`（工作中的中間產物；已在 .gitignore 內。檔案契約見 shan-skills 的 `docs/scratch-contract.md`）
 - **Spec 目錄**：`<例：docs/specs/<feature-slug>/>`
 - **Spec 檔案**：`<例：requirements.md / design.md / tasks.md>`
@@ -111,7 +112,7 @@ skill 執行時最常踩到的幾條。完整清單見 `<指向 CLAUDE.md 或等
 ## 填寫檢查
 
 - [ ] 第一行是 `<!-- shan-config: v2 -->`
-- [ ] A–I 每節有內容或明確寫 `不適用`
+- [ ] A–I 每節有內容或明確寫 `不適用`（`sa` 輪廓的 D、E、F、G 一律 `不適用`）
 - [ ] B 節分成「每棒必讀」與「依主題選讀」兩段；git 流程與審查節奏類的文件在必讀段
 - [ ] G 節的「審查的輸入」「審查修正的 commit 政策」「amend 政策」三欄都選定一個值
 - [ ] A 節的受保護路徑與 `.shan/guard.yaml` 的 `protected_paths` / `allowed_paths` 一致
