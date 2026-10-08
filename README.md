@@ -56,7 +56,7 @@ PG（程式專案）                                      handoff-in/
 - **PG 不改上游**：`spec-qa` 逐字比對 PG 手上的副本，被動過就是阻斷級
 - **docx 是輸出品，不是來源**：`shan-to-docx` 以專案的 Word 範本為底轉換（樣式對應檔由專案提供）；畫面截圖等複雜內容人工補。`shan-to-req` 同時讀 md 與補完的 docx，兩者有差異時由你裁決
 - **團隊沒有的階段就跳過**：沒有系統設計書就在 config 寫「無」，整段不走
-- **單人流程不受影響**：同一個 repo、同一個人，依序跑；找不到 `handoff-in/` 時，`shan-grill` 與 `shan-to-spec` 改讀已簽出的 `spec-draft/` 內容
+- **單人流程不受影響**：同一個 repo、同一個人，依序跑；找不到 `handoff-in/` 時，`shan-grill`、`shan-to-sd`、`shan-to-spec` 改讀已簽出的 `spec-draft/requirements.md` 與 `doc-draft/` 裡的 SD
 
 細節見 [docs/scratch-contract.md](./docs/scratch-contract.md)。
 
@@ -150,7 +150,7 @@ harness 層有自動化測試：
 node tests/guard-test.mjs
 ```
 
-它在暫存目錄建一個沙盒 repo，對兩支 guard 腳本餵 27 組 `PreToolUse` JSON，驗證拒絕與放行。docx 轉換腳本另有測試（需要 `python-docx`，請裝在專案虛擬環境）：
+它在暫存目錄建一個沙盒 repo，對兩支 guard 腳本餵 29 組 `PreToolUse` JSON，驗證拒絕與放行。docx 轉換腳本另有測試（需要 `python-docx`，請裝在專案虛擬環境）：
 
 ```bash
 python -X utf8 tests/docx-test.py

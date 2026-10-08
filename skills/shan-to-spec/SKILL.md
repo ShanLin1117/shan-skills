@@ -26,9 +26,9 @@ disable-model-invocation: true
    - 讀 `## Release Info`：`Status` 不是 `released` 就**停下來**，要 SA 先簽出；記下 `Rev`
 4. **系統設計書（輸入，唯讀）** —— 看 config **A 節「系統設計書」**：
    - 「無」或欄位不存在：跳過
-   - 「有」：讀 `handoff-in/<名稱>_SD.md`（優先）或 `.docx`（用 `python -X utf8 ${CLAUDE_SKILL_DIR}/../../scripts/docx/docx_dump.py <檔案>` 傾印）。**沒有 SD 就停下來**，告訴使用者 SD 還沒到。讀它的 `## Release Info`：`Status` 非 `released` 就停下來；記下 SD 的 `Rev` 與 `Based on`。只有 docx 時沒有 Release Info，交付時註明「SD 為 docx，無法比對 rev」
+   - 「有」：讀 `handoff-in/<名稱>_SD.md`（優先）或 `.docx`；單人流程沒有 `handoff-in/` 時，讀 `doc-draft/<名稱>_SD.md`（須已 `released`）（用 `python -X utf8 ${CLAUDE_SKILL_DIR}/../../scripts/docx/docx_dump.py <檔案>` 傾印）。**沒有 SD 就停下來**，告訴使用者 SD 還沒到。讀它的 `## Release Info`：`Status` 非 `released` 就停下來；記下 SD 的 `Rev` 與 `Based on`。只有 docx 時沒有 Release Info，交付時註明「SD 為 docx，無法比對 rev」
    - SD 的 `Based on` 與 requirements 的 `Rev` 不一致：**停下來**，告訴使用者 SD 尚未跟上最新需求
-5. **決策來源** —— `<草稿區>/<feature-slug>/grill.md`（PG 端 `shan-grill` 產的技術決策）。沒有就從當前對話綜合，交付時說明「本次沒有 grill 記錄，決策來自對話」
+5. **決策來源** —— `<草稿區>/<feature-slug>/grill.md` 中**無標籤**的決策（PG 端 `shan-grill` 產的實作決策）。`[業務]`、`[設計]` 標籤的決策是 SA 端產 requirements／SD 時用的，**不重新當成 design 決策**，要引用就引用 requirements 或 SD。沒有就從當前對話綜合，交付時說明「本次沒有 grill 記錄，決策來自對話」
 6. **跨棒事實** —— `findings.md`（若存在；格式見草稿區契約）。前一輪實作查證出來、spec 該吸收的事實
 7. **需求疑義** —— `req-questions.md`（若存在）。已 `answered` 的疑義，答覆已反映在 requirements 的新 rev 裡，不必再處理
 8. **專案脈絡** —— 依 config **B 節**順序讀；詞彙用 config B 節指定的來源，不自創同義詞

@@ -17,7 +17,7 @@ disable-model-invocation: true
 1. **`.shan/config.md`** —— 缺就告訴使用者跑 `/shan-skills:shan-setup`
 2. **對應檔** —— config **A 節「交接物」**裡，這種文件（需求分析書或系統設計書）的「docx 對應檔」。寫「不適用」或沒有，就告訴使用者這個專案沒設定 docx 輸出，建議跑 `shan-setup` 的「docx 對應」流程
 3. **來源 md** —— 使用者指定，或 `doc-draft/` 下依命名規則找到的 `<名稱>_SA.md` / `<名稱>_SD.md`。有多個候選就問
-4. **Python 與 python-docx** —— 腳本需要 `python-docx`。先試 `python -X utf8 ${CLAUDE_SKILL_DIR}/../../scripts/docx/docx_dump.py` 看會不會報「缺少 python-docx」。缺的話**告訴使用者在專案虛擬環境裝**（`pip install python-docx`），**不要自己安裝**
+4. **Python 與 python-docx** —— 腳本需要 `python-docx`。先跑 `python -X utf8 -c "import docx"`，失敗就是缺 `python-docx`。缺的話**告訴使用者在專案虛擬環境裝**（`pip install python-docx`），**不要自己安裝**
 
 ---
 
@@ -49,6 +49,8 @@ python -X utf8 ${CLAUDE_SKILL_DIR}/../../scripts/docx/md_to_docx.py \
    - 每個 `待補` 圖片的位置（轉出後是「【請貼上圖片：…】」預留文字）
    - **頁首文字來自範本**，通常含專案名稱或年度採購案名，不會自動更新，請手動修改
    - 版面微調、封面／簽核欄等範本以外的內容
+   - 腳本若印出**警告**（範本有多個節而只保留最後一節的版面、圖片無法嵌入而改用預留文字），逐條轉述給使用者；多節範本的前面幾節頁首頁尾會遺失，要人工檢查
+   - md 裡的 HTML 註解（`<!-- … -->`）不會進 docx，這是刻意的（常拿來放內部備註）
 3. 補完後的 docx 由使用者自行保管；之後若 md 再改，**重新轉換會產生新檔**，人工補的內容不會自動帶過去，需要手動合併。這是刻意的：docx 是下游的輸出品，不是來源
 4. 要產給 PG 的 requirements 時，`shan-to-req` 會同時讀這份 md 與補完的 docx
 

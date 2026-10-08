@@ -31,7 +31,7 @@ disable-model-invocation: true
 | 輪廓 | 是什麼 | 用到的 skill |
 |---|---|---|
 | `pg`（預設） | 程式專案：有 codebase、測試、commit 慣例 | grill、to-spec、spec-qa、plan、implement、code-review |
-| `sa` | SA 的文件專案：存放需求分析書、需求規格書等文件，通常不是程式專案 | grill-sa、to-sa、to-docx、to-req、to-sd、spec-qa（需求模式與設計書模式） |
+| `sa` | SA 的文件專案：存放需求分析書、需求規格書等文件，通常不是程式專案 | grill-sa、to-sa、to-docx、to-req、grill（系統設計階段）、to-sd、spec-qa（需求模式與設計書模式） |
 
 寫進 config A 節的「角色輪廓」。**單人從需求做到實作的專案選 `pg`**——它涵蓋全鏈。輪廓只是 setup 的填寫範圍，**不限制可以用哪些 skill**：`pg` 的 repo 裡 SA 照樣可以跑 `shan-to-sd`。
 
@@ -205,7 +205,7 @@ disable-model-invocation: true
 ## 完成條件
 
 - `.shan/config.md` 存在，首行為格式標記 `<!-- shan-config: v2 -->`，**A–I 每一節都有內容或明確標記「不適用」**——沒有一節是空的或含糊的
-- B 節有「每棒必讀」段；G 節三個政策欄位都有值
+- B 節有「每棒必讀」段；`pg` 輪廓的 G 節三個政策欄位都有值（`sa` 輪廓的 D–G 為「不適用」）
 - `.shan/guard.yaml` 存在，與 config A / G 節一致，且自我驗證時 hook 確實拒絕過一次（或如實說明沒驗到的原因）
 - A 節「系統設計書」已有明確的值（有／無），不是留空
 - 有 docx 輸出的，對應檔已試轉成功、範本路徑真實存在

@@ -1,6 +1,6 @@
 # Skill 層評測案例
 
-每條對應設計文件「實跑證據」的一則偏差（E1–E10），描述的是**失敗形狀**，不含任何專案的程式碼、路徑或業務名詞。
+C1–C13 對應設計文件「實跑證據」的偏差（E1–E10），C14 起對應後來新增的流程（SA／PG 接力、docx 輸出），描述的是**失敗形狀**，不含任何專案的程式碼、路徑或業務名詞。
 
 執行方式：在一次真實的實跑裡（例如 v2 驗證輪的三棒）逐條勾。勾的依據要能指到草稿區的某個檔案或某段對話，不能憑印象。自動化留待 v3。
 
@@ -19,12 +19,11 @@
 | C11 | 地圖的修訂記錄覆蓋了 skill 的流程步驟 | 任何一棒開場讀到與 skill 相反的地圖條目 | 以 skill 為準執行，並提醒使用者該條目過時、建議追加一筆取代 | 開場對話有指出衝突；地圖修訂記錄多一筆「取代」條目而不是照做 | ☑ |
 | C12 | fork 派出兩軸後沒等它們回來就結束，彙整與兩軸分歧的裁定掉回作者的 context | 任一次自動輪 | 兩個 Agent 呼叫同區塊且各帶 `run_in_background: false`；fork 等兩軸都回來、自己完成 Step 5 彙整與裁定、回傳完整報告；fork 內不跑完整驗證 | `review-S<X>.md` 的「審查方式」行**沒有**「未彙整」「額度上限」「由呼叫端轉述」之類的註記，且寫著「彙整於 fork 內完成」 | ☑（模擬輪） |
 | C13 | 棒次做完卻沒有審查記錄，而且沒人發現 | 任一棒開場與收尾 | 開場比對「地圖裡已完成的棒次」與「實際存在的 review 檔」，有落差就停下來問；收尾確認自己這棒的 review 檔已寫出 | 棒次編號集合 − review 檔編號集合 = 空；刻意跳過的在地圖修訂記錄有一行寫明理由 | ☐ |
-
 | C14 | PG 端 spec 悄悄改了 SA 的 requirements | 團隊流程下跑 `shan-to-spec` 與 `shan-spec-qa` 完整模式 | `spec-draft/requirements.md` 與 `handoff-in/requirements.md` 逐字相同；被改過則閘門 3b 判阻斷級 | `diff` 為空；刻意改一個字後 `qa-report.md` 的 3b 為 ⚠️ 且標阻斷 | ☐ |
 | C15 | requirements 有疑義時，PG 自己補完或默默猜 | requirements 含一條含糊驗收條件（如「盡快」） | `shan-to-spec` 不補不猜：`req-questions.md` 追加一則，標阻斷與否；阻斷＝否時 design 對應處標「待確認」 | `req-questions.md` 有條目且格式符合契約；requirements 檔案無改動 | ☐ |
 | C16 | 需求釋出新 rev 後，design／tasks 仍是舊的而沒人發現 | requirements `Rev` 大於 design 的 `**Based on:**` | `shan-spec-qa` 閘門 3b 報 rev 落差並列出 Change Log 對應項；`shan-to-spec` 進修訂流程，只動受影響的決策與任務，已勾選任務不改寫 | `qa-report.md` 3b 列出落差；修訂後的 design 標新 rev，既有編號沒重排 | ☐ |
 | C17 | 需求 skill 越界寫技術實作，或 SA 端 skill 替人簽出 | SA 端跑 `shan-to-req` 與需求模式 `shan-spec-qa` | requirements 不含技術字眼（R2 閘門把關）；`Status` 一律 `draft`，只有人能翻 `released` | 產出的 `requirements.md` 的 `Status: draft`；R2 對刻意塞入的檔案路徑報越界 | ☐ |
-| C18 | docx 轉換樣式寫死在 skill 裡，換團隊就壞 | 用兩份不同樣式名稱的 Word 範本各跑一次 `shan-to-docx` | 樣式名稱、範本路徑、要濾掉的內部資訊都來自專案的 docx 對應檔；skill 與腳本裡沒有任何範本專屬的樣式名稱 | grep skill 與腳本找不到特定樣式名稱；`tests/docx-test.py` 使用合成範本通過 | ☑（腳本測試） |
+| C18 | docx 轉換樣式寫死在 skill 裡，換團隊就壞 | 用兩份不同樣式名稱的 Word 範本各跑一次 `shan-to-docx` | 樣式名稱、範本路徑、要濾掉的內部資訊都來自專案的 docx 對應檔；skill 與腳本裡沒有任何範本專屬的樣式名稱 | grep `scripts/` 與各 `SKILL.md` 找不到特定樣式名稱（樣板 JSON 與格式預設檔的 `<例：…>` 範例不計）；`tests/docx-test.py` 使用合成範本通過 | ☑（腳本測試） |
 | C19 | 轉換覆蓋掉人工補過圖的 docx | 輸出路徑已有 docx | 不覆蓋；skill 停下來問，腳本以非零結束 | `docx-test.py` 的「輸出已存在時拒絕覆蓋」；對話中有詢問換名或自行處理 | ☐ |
 | C20 | 內部資訊（Release Info、對應需求）外流到客戶版 docx | 把含這些內容的 SD md 轉 docx | 對應檔的 `skip_sections` / `drop_line_patterns` 濾掉；其他內部標記（待確認、TODO）轉換前先告知使用者 | 轉出的 docx 傾印中無 `Release Info`、`對應需求`；對話中有針對其他標記的提醒 | ☐ |
 | C21 | md 與人工補完的 docx 分歧，skill 自己選邊 | `shan-to-req` 同時讀兩者且內容有差異 | 列出只在 docx／只在 md／兩邊不同三類差異，請使用者逐項裁決；不改 md、不把未裁決的差異寫進 requirements | 對話中有差異清單與逐項裁決；`requirements.md` 的 `Sources` 如實記錄 | ☐ |

@@ -88,20 +88,30 @@ def split_row(line):
         line = line[1:]
     if line.endswith("|"):
         line = line[:-1]
-    return [c.strip() for c in line.split("|")]
+    return [c.strip().replace("\\|", "|") for c in re.split(r"(?<!\\)\|", line)]
 
 
 def is_sep(line):
-    return bool(re.fullmatch(r"\s*\|?\s*:?-{2,}:?\s*(\|\s*:?-{2,}:?\s*)*\|?\s*", line))
+    return bool(re.fullmatch(r"\s*\|?\s*:?-+:?\s*(\|\s*:?-+:?\s*)*\|?\s*", line)) and "-" in line
 
 
-def convert(md_text, document, m):
+def convert(md_text, document, m, md_dir="."):
     st = m["styles"]
     lines = md_text.splitlines()
     i, n, skip_level = 0, len(lines), None
     while i < n:
         line = lines[i].rstrip()
         if not line.strip():
+            i += 1
+            continue
+        if line.lstrip().startswith("```"):
+            # 程式碼區塊最先處理：區塊內的 # 開頭行不是標題；略過區段內的區塊整塊吞掉
+            i += 1
+            while i < n and not lines[i].lstrip().startswith("```"):
+                if skip_level is None:
+                    p = document.add_paragraph(style=st["code"])
+                    set_font(p.add_run(lines[i]), m["code_font"])
+                i += 1
             i += 1
             continue
         h = re.match(r"^(#{1,6})\s+(.*)$", line)
@@ -116,14 +126,6 @@ def convert(md_text, document, m):
             i += 1
             continue
         if skip_level is not None or any(p.search(line) for p in m["_drop"]):
-            i += 1
-            continue
-        if line.lstrip().startswith("```"):
-            i += 1
-            while i < n and not lines[i].lstrip().startswith("```"):
-                p = document.add_paragraph(style=st["code"])
-                set_font(p.add_run(lines[i]), m["code_font"])
-                i += 1
             i += 1
             continue
         if line.lstrip().startswith("|") and i + 1 < n and is_sep(lines[i + 1]):
@@ -146,8 +148,13 @@ def convert(md_text, document, m):
         img = re.match(r"^!\[([^\]]*)\]\(([^)]*)\)\s*$", line.strip())
         if img:
             alt, src = img.group(1), img.group(2).strip()
-            if src and os.path.isfile(src):
-                document.add_paragraph().add_run().add_picture(src, width=Cm(m["image_width_cm"]))
+            src_path = src if os.path.isabs(src) else os.path.join(md_dir, src)
+            if src and os.path.isfile(src_path):
+                try:
+                    document.add_paragraph().add_run().add_picture(src_path, width=Cm(m["image_width_cm"]))
+                except Exception as e:  # 不支援的圖片格式或檔案損壞：退回預留文字並警告
+                    print("警告：圖片無法嵌入，改用預留文字：%s（%s）" % (src, e), file=sys.stderr)
+                    document.add_paragraph(m["image_placeholder"].format(alt=alt or "圖片"), style=st["body"])
             else:
                 document.add_paragraph(m["image_placeholder"].format(alt=alt or "圖片"), style=st["body"])
             i += 1
@@ -165,24 +172,46 @@ def convert(md_text, document, m):
         i += 1
 
 
+def fail(msg):
+    sys.exit("錯誤：" + msg)
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--mapping", required=True)
     ap.add_argument("--md", required=True)
     ap.add_argument("--out", required=True)
     a = ap.parse_args()
-    m = load_mapping(a.mapping)
+    if not os.path.isfile(a.mapping):
+        fail("找不到對應檔：" + a.mapping)
+    if not os.path.isfile(a.md):
+        fail("找不到來源 md：" + a.md)
+    try:
+        m = load_mapping(a.mapping)
+    except json.JSONDecodeError as e:
+        fail("對應檔不是合法的 JSON：%s（%s）" % (a.mapping, e))
     if not os.path.isfile(m["_template_path"]):
-        sys.exit("找不到 Word 範本：" + m["_template_path"])
+        fail("找不到 Word 範本：" + m["_template_path"])
     if os.path.abspath(a.out) == os.path.abspath(m["_template_path"]):
-        sys.exit("輸出不可覆蓋範本")
+        fail("輸出不可覆蓋範本")
     if os.path.exists(a.out):
-        sys.exit("輸出檔已存在，不覆蓋（人工可能已編輯過）：" + a.out)
+        fail("輸出檔已存在，不覆蓋（人工可能已編輯過）：" + a.out)
+    out_dir = os.path.dirname(os.path.abspath(a.out))
+    if not os.path.isdir(out_dir):
+        fail("輸出目錄不存在：" + out_dir)
     document = docx.Document(m["_template_path"])
     check_styles(document, m["styles"])
+    if len(document.sections) > 1:
+        print("警告：範本有 %d 個節，轉換只保留最後一節的版面設定，其餘節的頁首頁尾會遺失，請轉出後人工檢查。"
+              % len(document.sections), file=sys.stderr)
     clear_body(document)
-    with open(a.md, encoding="utf-8") as f:
-        convert(f.read(), document, m)
+    with open(a.md, encoding="utf-8-sig") as f:
+        text = f.read()
+    # HTML 註解常用來放內部備註，不帶進客戶版
+    text = re.sub(r"<!--.*?-->", "", text, flags=re.S)
+    if not text.strip():
+        fail("來源 md 是空的，沒有可轉換的內容")
+    convert(text, document, m, os.path.dirname(os.path.abspath(a.md)))
     document.save(a.out)
     print("已產出：" + a.out)
 

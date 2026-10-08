@@ -19,7 +19,13 @@ except ImportError:
 def main():
     if len(sys.argv) != 2:
         sys.exit(__doc__)
-    d = docx.Document(sys.argv[1])
+    import os
+    if not os.path.isfile(sys.argv[1]):
+        sys.exit("錯誤：找不到檔案：" + sys.argv[1])
+    try:
+        d = docx.Document(sys.argv[1])
+    except Exception as e:
+        sys.exit("錯誤：無法讀取 docx（檔案損壞或不是 docx？）：%s" % e)
     out = []
     for el in d.element.body.iterchildren():
         if el.tag.endswith("}p"):

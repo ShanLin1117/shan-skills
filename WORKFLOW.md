@@ -67,7 +67,7 @@ PG   換掉 handoff-in/ 的檔 → shan-to-spec 進修訂流程：
 
 ## 二、走一遍：結帳套用優惠券
 
-以下用單人流程走一遍。團隊流程的前兩階段換成 SA 端的 `shan-grill-sa` 與 `shan-to-req`，其餘相同。
+以下用單人流程走一遍。團隊流程的前兩階段換成 SA 端的 `shan-grill-sa`、`shan-to-sa`、`shan-to-req`（有 SD 階段時再加 `shan-grill`、`shan-to-sd`），其餘相同。
 
 ### 階段 0｜`shan-setup`
 
