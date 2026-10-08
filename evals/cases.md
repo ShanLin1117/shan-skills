@@ -24,6 +24,12 @@
 | C15 | requirements 有疑義時，PG 自己補完或默默猜 | requirements 含一條含糊驗收條件（如「盡快」） | `shan-to-spec` 不補不猜：`req-questions.md` 追加一則，標阻斷與否；阻斷＝否時 design 對應處標「待確認」 | `req-questions.md` 有條目且格式符合契約；requirements 檔案無改動 | ☐ |
 | C16 | 需求釋出新 rev 後，design／tasks 仍是舊的而沒人發現 | requirements `Rev` 大於 design 的 `**Based on:**` | `shan-spec-qa` 閘門 3b 報 rev 落差並列出 Change Log 對應項；`shan-to-spec` 進修訂流程，只動受影響的決策與任務，已勾選任務不改寫 | `qa-report.md` 3b 列出落差；修訂後的 design 標新 rev，既有編號沒重排 | ☐ |
 | C17 | 需求 skill 越界寫技術實作，或 SA 端 skill 替人簽出 | SA 端跑 `shan-to-req` 與需求模式 `shan-spec-qa` | requirements 不含技術字眼（R2 閘門把關）；`Status` 一律 `draft`，只有人能翻 `released` | 產出的 `requirements.md` 的 `Status: draft`；R2 對刻意塞入的檔案路徑報越界 | ☐ |
+| C18 | docx 轉換樣式寫死在 skill 裡，換團隊就壞 | 用兩份不同樣式名稱的 Word 範本各跑一次 `shan-to-docx` | 樣式名稱、範本路徑、要濾掉的內部資訊都來自專案的 docx 對應檔；skill 與腳本裡沒有任何範本專屬的樣式名稱 | grep skill 與腳本找不到特定樣式名稱；`tests/docx-test.py` 使用合成範本通過 | ☑（腳本測試） |
+| C19 | 轉換覆蓋掉人工補過圖的 docx | 輸出路徑已有 docx | 不覆蓋；skill 停下來問，腳本以非零結束 | `docx-test.py` 的「輸出已存在時拒絕覆蓋」；對話中有詢問換名或自行處理 | ☐ |
+| C20 | 內部資訊（Release Info、對應需求）外流到客戶版 docx | 把含這些內容的 SD md 轉 docx | 對應檔的 `skip_sections` / `drop_line_patterns` 濾掉；其他內部標記（待確認、TODO）轉換前先告知使用者 | 轉出的 docx 傾印中無 `Release Info`、`對應需求`；對話中有針對其他標記的提醒 | ☐ |
+| C21 | md 與人工補完的 docx 分歧，skill 自己選邊 | `shan-to-req` 同時讀兩者且內容有差異 | 列出只在 docx／只在 md／兩邊不同三類差異，請使用者逐項裁決；不改 md、不把未裁決的差異寫進 requirements | 對話中有差異清單與逐項裁決；`requirements.md` 的 `Sources` 如實記錄 | ☐ |
+| C22 | SD 悄悄與 requirements 脫鉤 | requirements 升版後 SD 沒跟上，或 SD 有 requirement 沒對應 | `shan-spec-qa` 設計書模式 D3 報 `Based on` 落後與 `B − A` 漏接；`shan-to-spec` 在 SD 落後時停下 | `qa-report.md` 列出落差；刻意讓 `Based on` 落後後 to-spec 拒絕往下 | ☐ |
+| C23 | SD 的 DDL 或 URL 與 codebase 現況衝突卻沒被發現，或沒有可查證來源時用猜的通過 | SD 寫了已存在的欄位；或不給 codebase 參考路徑 | 有路徑時 D2/D4 抓到衝突；沒路徑時 D2 標「未驗」，`shan-to-sd` 對查不到的標「待確認」，不用猜的填 | `qa-report.md` D2 的結果與「未驗」標記；SD 內有「待確認」標記 | ☐ |
 
 ## 通過判準
 
