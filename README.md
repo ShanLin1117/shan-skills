@@ -14,6 +14,7 @@ shan-setup        新 repo 跑一次 ─────→ .shan/config.md + .shan/
 shan-grill        對話 ──────────────→ 決策清單
      ↓
 shan-to-spec      決策清單 ──────────→ spec 草稿
+                  （團隊流程下上面兩步拆成 SA 的 grill-sa → to-req 與 PG 的 grill → to-spec，見下）
      ↓
 shan-spec-qa      spec 品保 ─────────→ 四道閘門：格式 / 識別字 / 機械 / 對抗式語意
      ↓
@@ -24,6 +25,28 @@ shan-implement    一棒一個視窗 ──────→ 綠燈 + commit + 自
 shan-code-review  fork 的乾淨 context ─→ 規範軸 ∥ 意圖軸，並排回報
 ```
 
+### 團隊流程：SA 與 PG 分兩段
+
+一個專案若由不同角色接力（SA 收需求、PG 做開發），工作流在 `requirements.md` 處切開，它是兩段之間的契約：
+
+```
+SA 的文件專案（setup 選 sa 輪廓）                   PG 的程式專案
+shan-grill-sa → shan-to-req → shan-spec-qa(需求模式)
+                       │            │
+                       │      SA 手動簽出 Status: released
+                       └─────→ requirements.md ──交付──→ requirements-in/
+                                                         shan-grill(技術決策) → shan-to-spec(design+tasks)
+                                                         → shan-spec-qa(完整模式) → shan-plan → …
+                     ←──── req-questions.md（PG 的疑義退回 SA）────
+```
+
+- **簽出是人的動作**：`Status` 由 SA 手動翻成 `released`，skill 不代簽
+- **需求變更走 rev**：改一個字就 `Rev` +1、`Change Log` 追加；PG 依 Change Log 修訂 design 與 tasks，不比對全文
+- **PG 不改 requirements**：有疑義寫 `req-questions.md` 退回，`spec-qa` 會逐字比對 PG 手上的 requirements 有沒有被動過
+- **單人流程不受影響**：同一個 repo、同一個人，依序跑 `grill-sa → to-req → spec-qa → （自己簽出）→ grill → to-spec → spec-qa → …`。找不到 `requirements-in/` 時，`shan-grill` 與 `shan-to-spec` 會改讀已簽出的 `spec-draft/requirements.md`
+
+細節見 [docs/scratch-contract.md](./docs/scratch-contract.md)。
+
 中間產物都落在專案的**草稿區**（由 config 指定，通常是 `.scratch/` 這類已被 gitignore 的目錄），檔案格式由 [docs/scratch-contract.md](./docs/scratch-contract.md) 定義。
 
 ## Skill 一覽
@@ -31,14 +54,16 @@ shan-code-review  fork 的乾淨 context ─→ 規範軸 ∥ 意圖軸，並排
 | Skill | 做什麼 | 什麼時候叫它 |
 |---|---|---|
 | `shan-setup` | 探索專案的技術棧、路徑、測試與 commit 慣例，寫出 `.shan/config.md` 與 `.shan/guard.yaml` | 每個新 repo 跑一次 |
-| `shan-grill` | 決策樹審訊：逐輪推進決策前沿，事實自己查、決策交你裁決 | 需求還沒成形，想先想清楚 |
-| `shan-to-spec` | 把定案的決策綜合成 spec 草稿。不面談，只綜合 | 審訊完，要寫規格 |
-| `shan-spec-qa` | 對 spec 文件本身做品保；語意審查強制由不共享脈絡的獨立審查者執行 | spec 初稿或修訂完，準備開工前 |
+| `shan-grill-sa` | SA 端的需求審訊：只問業務規則，事實從 SA 專案文件查；也處理 PG 退回的疑義 | 收到客戶需求或問題單，要釐清 |
+| `shan-to-req` | 把業務決策綜合成 `requirements.md`（user story + 驗收條件 + Release Info），支援需求變更的新 rev | SA 審訊完，要產需求 |
+| `shan-grill` | 決策樹審訊：逐輪推進決策前沿，事實自己查、決策交你裁決。團隊流程下專問技術決策 | 需求還沒成形，或 requirements 到手後要定技術決策 |
+| `shan-to-spec` | 把 SA 簽出的 requirements 加上技術決策，綜合成 design + tasks。不改 requirements，疑義退回；requirements 釋出新 rev 時做修訂 | PG 收到 requirements 並審訊完，要寫設計與任務 |
+| `shan-spec-qa` | 對 spec 文件本身做品保；語意審查強制由不共享脈絡的獨立審查者執行。**需求模式**審 requirements 能不能交給 PG，**完整模式**審整份 spec 並比對是否忠於 requirements | requirements 準備簽出前；spec 初稿或修訂完，準備開工前 |
 | `shan-plan` | 把任務清單切成 session 邊界，產出地圖與每棒的開場 prompt | 任務數超過 3，要開始實作 |
 | `shan-implement` | 議定 seam → 紅綠迴圈 → 驗證閘門 → 收尾交棒 → 自動審查。只做被指派的那一棒 | 動工一棒 |
 | `shan-code-review` | 在 fork 出來的乾淨 context 平行 spawn 兩軸審查 agent，並排回報、不跨軸重排、**只回報不動手** | 一棒 commit 之後（自動），或另開視窗做第 2 輪／最終把關 |
 
-除了 `shan-code-review`，其餘六支都掛 `disable-model-invocation: true`——**只能手動叫**，不會自動觸發。`shan-code-review` 不能掛這個旗標，因為它擋的是「模型的一切呼叫」而不只是自動觸發，掛了 `shan-implement` 就無法在 commit 後呼叫它；改以 description 明寫「只在自動輪或使用者明確呼叫時使用」來防誤觸發。呼叫名是 `/shan-skills:shan-grill`，短別名 `/shan-grill` 在沒有同名 skill 時也能用。
+除了 `shan-code-review`，其餘八支都掛 `disable-model-invocation: true`——**只能手動叫**，不會自動觸發。`shan-code-review` 不能掛這個旗標，因為它擋的是「模型的一切呼叫」而不只是自動觸發，掛了 `shan-implement` 就無法在 commit 後呼叫它；改以 description 明寫「只在自動輪或使用者明確呼叫時使用」來防誤觸發。呼叫名是 `/shan-skills:shan-grill`，短別名 `/shan-grill` 在沒有同名 skill 時也能用。
 
 ## 四層架構
 
@@ -115,7 +140,7 @@ node tests/guard-test.mjs
 
 ```
 .claude-plugin/plugin.json      plugin manifest
-skills/shan-*/                  七支 skill（shan-setup 含 config / guard / spec 格式三份樣板；shan-code-review 含兩軸檢查清單）
+skills/shan-*/                  九支 skill（shan-setup 含 config / guard / spec 格式三份樣板；shan-code-review 含兩軸檢查清單）
 agents/                         shan-review-standards、shan-review-intent
 hooks/hooks.json                PreToolUse 註冊
 scripts/                        guard-protected-paths.sh、guard-git.sh、lib.sh

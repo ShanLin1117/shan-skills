@@ -25,7 +25,39 @@
 
 ---
 
+### 團隊流程：SA 與 PG 接力
+
+上表是單人從頭做到尾的版本。團隊裡 SA 與 PG 是不同人、通常在不同的 repo，鏈在 `requirements.md` 處切成兩段：
+
+| 角色 | 階段 | 吃什麼 | 吐什麼 |
+|---|---|---|---|
+| SA | `shan-grill-sa` | 客戶需求、問題單、SA 專案文件（、`req-questions.md`） | `grill.md`（業務決策） |
+| SA | `shan-to-req` | `grill.md` | `spec-draft/requirements.md`（`Status: draft`） |
+| SA | `shan-spec-qa`（需求模式） | requirements 草稿 | 修訂後的 requirements + `qa-report.md` |
+| SA | **手動簽出** | | `Status: released`、填 `Released`，搬進 spec 目錄，把檔案交給 PG |
+| PG | **手動放入** | SA 交付的檔 | `requirements-in/requirements.md` |
+| PG | `shan-grill` | `requirements-in/` + codebase | `grill.md`（技術決策）；需求有疑義則寫 `req-questions.md` |
+| PG | `shan-to-spec` | `requirements-in/` + `grill.md` | `spec-draft/` 三份：requirements 原樣副本 + design + tasks |
+| PG | `shan-spec-qa`（完整模式） | 三份 spec | 含閘門 3b 交接檢查：requirements 沒被動過、rev 對得上 |
+| PG | **手動搬進 spec 目錄** → `shan-plan` → `shan-implement` → `shan-code-review` | | 同單人流程 |
+
+**需求變更**（開發中 SA 改了需求）：
+
+```
+SA   shan-grill-sa（只問這次改什麼） → shan-to-req（Rev+1、Change Log 追加） → spec-qa → 簽出 → 交付新檔
+PG   換掉 requirements-in/ → shan-to-spec 進修訂流程：
+       讀落差 rev 的 Change Log，逐項找受影響的決策與任務
+       未勾選的任務改寫；已勾選的不動、另加新任務並開票
+       Based on 更新 → shan-spec-qa → 重跑 shan-plan（讀修訂記錄、保留已完成棒次）
+```
+
+**PG 發現需求有洞**：不改、不猜。`req-questions.md` 追加一則（標明阻斷與否）→ 使用者帶給 SA → `shan-grill-sa` 當前沿處理 → `shan-to-req` 寫答覆（必要時新 rev）。非阻斷的疑義 PG 先以暫定理解往下做，design 對應處標「待確認」。
+
+---
+
 ## 二、走一遍：結帳套用優惠券
+
+以下用單人流程走一遍。團隊流程的前兩階段換成 SA 端的 `shan-grill-sa` 與 `shan-to-req`，其餘相同。
 
 ### 階段 0｜`shan-setup`
 

@@ -22,7 +22,7 @@ disable-model-invocation: true
 
 草稿區檔案的格式一律依 `${CLAUDE_SKILL_DIR}/../../docs/scratch-contract.md`（下稱**草稿區契約**）。
 
-**團隊流程下，需求已由 SA 定案**：`<草稿區>/<feature-slug>/requirements-in/requirements.md` 存在時，把它當**已知前提**讀完——它的 `Status` 要是 `released`，記下 `Rev`。這種審訊問的是**技術決策**（架構、資料模型、介面、測試 seam），**不重問需求**。需求本身含糊、矛盾或少分支時，不要在審訊裡替 SA 決定，改在 `req-questions.md` 追加一則疑義（格式見草稿區契約），並把依賴它的決策留在「待決」。
+**團隊流程下，需求已由 SA 定案**：`<草稿區>/<feature-slug>/requirements-in/requirements.md` 存在時（單人流程下沒有這個檔，則讀已簽出的 `spec-draft/requirements.md`），把它當**已知前提**讀完——它的 `Status` 要是 `released`，記下 `Rev`。這種審訊問的是**技術決策**（架構、資料模型、介面、測試 seam），**不重問需求**。需求本身含糊、矛盾或少分支時，不要在審訊裡替 SA 決定，改在 `req-questions.md` 追加一則疑義（格式見草稿區契約），並把依賴它的決策留在「待決」。
 
 ---
 
