@@ -56,7 +56,7 @@ PG（程式專案）                                      handoff-in/
 - **PG 不改上游**：`spec-qa` 逐字比對 PG 手上的副本，被動過就是阻斷級
 - **docx 是輸出品，不是來源**：`shan-to-docx` 以專案的 Word 範本為底轉換（樣式對應檔由專案提供）；畫面截圖等複雜內容人工補。`shan-to-req` 同時讀 md 與補完的 docx，兩者有差異時由你裁決
 - **團隊沒有的階段就跳過**：沒有系統設計書就在 config 寫「無」，整段不走
-- **單人流程不受影響**：同一個 repo、同一個人，依序跑；找不到 `handoff-in/` 時，`shan-grill`、`shan-to-sd`、`shan-to-spec` 改讀已簽出的 `spec-draft/requirements.md` 與 `doc-draft/` 裡的 SD
+- **單人流程不需要任何交接階段**：沒有 SA、沒有 SD 的專案，`grill → to-spec` 一步就產出 requirements、design、tasks，與最初相同。`shan-to-spec` 看上游產物決定模式——有 `handoff-in/` 才進接力模式（唯讀、要求簽出）；否則由決策自己補上。團隊流程的階段只有真的存在才會被要求
 
 細節見 [docs/scratch-contract.md](./docs/scratch-contract.md)。
 
@@ -132,6 +132,7 @@ hook 腳本以 bash 執行；Windows 需要 Git Bash（Claude Code 本身就要�
 6. **「絕不該做」的事由 hook 擋，不由 prose 擋。** 寫入已核可的 spec、amend、force push、在預設分支 commit——這些不靠模型記得，靠 `PreToolUse` 拒絕。需要判斷的事（未經同意不 commit）仍留在 prose。
 7. **跨 session 的狀態只走草稿區契約。** `findings.md`、`issues/`、`review-S<X>.md`、地圖的修訂記錄——每個檔誰產、誰讀、追加還是覆寫，都有明文。skill 不各自發明檔案。
 8. **寫入 spec 目錄前一定經過人工核可。** skill 先寫草稿，你核可後才進正式位置。
+9. **階段都可以省略，缺上游時降級而不是擋下來。** skill 依上游產物存不存在決定行為，不依角色。「簽出」「版次比對」是交接機制，只有真的收到別人的交付件才適用；單人專案不該為了沒有的角色多跑步驟。skill 只是把你會做的步驟少打幾個字。
 
 ## 實跑記錄
 

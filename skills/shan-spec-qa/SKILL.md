@@ -135,7 +135,7 @@ requirements 是 SA 的契約，PG 端的 spec 必須**忠於它**。逐項實�
 | 設計決策有出處 | design 每個決策都有 `serves Req X.Y`，且該編號存在、未移除 | 決策在服務不存在的需求 |
 | 疑義已交代 | `req-questions.md` 沒有 `阻斷＝是` 且 `open` 的項目；`阻斷＝否` 的在 design 有「待確認」標記 | 設計建在未解的疑義上 |
 
-沒有 `handoff-in/`（單人流程）時，「未被動過」改成確認 `Status` 與 `Rev` 合理即可，並在 `qa-report.md` 註明。
+沒有 `handoff-in/`（單人流程）時：「未被動過」改成確認 `Status` 與 `Rev` 合理即可；「已簽出」「SD 已簽出」只**提醒**（requirements 仍是 `draft`、或單人沒有 SD），**不判失敗**；沒有 SD 時「SD 不被重寫」「SD 項目有任務」不適用。這些都在 `qa-report.md` 註明為「單人流程」。簽出與版次比對是交接機制，沒有交接就不是缺陷。
 
 ---
 
@@ -271,7 +271,7 @@ requirements 不該有技術實作。抽出 backtick 包起來的識別字、檔
 |---|---|
 | 需求涵蓋 | 抽出 requirements 的 Req 編號集合 B（排除「已移除」墓碑），SD 所有 `對應需求` 行的編號集合 A；`B − A` 逐條必須在 SD 明寫「不涉及設計變更」，否則是漏接 |
 | 引用有效 | `A − B` 必須為空（SD 引用了不存在或已移除的需求） |
-| requirements 已簽出 | requirements 的 `Status` 為 `released` | 在未簽出的需求上寫 SD（手寫的 SD 不會被 `shan-to-sd` 的前置檢查擋住，這裡補上） |
+| requirements 已簽出 | requirements 的 `Status` 為 `released` | 在未簽出的需求上寫 SD。**提醒、不判失敗**：SD 的 `Based on` 註明了 `（draft）` 就視為使用者已知情並接受 |
 | rev 綁定 | SD 的 `Based on` 等於 requirements 目前的 `Rev`；落後則列出 requirements `Change Log` 的落差項，逐項確認 SD 是否跟上 |
 | 表格完整 | 欄位對照表、URL 規格表的每列欄數與表頭一致，沒有空儲存格卻沒說明 |
 | Change Log | 與上一版（若有）逐項核對，列的和實際動到的一致 |

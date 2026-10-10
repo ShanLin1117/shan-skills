@@ -29,6 +29,7 @@ C1–C13 對應設計文件「實跑證據」的偏差（E1–E10），C14 起�
 | C21 | md 與人工補完的 docx 分歧，skill 自己選邊 | `shan-to-req` 同時讀兩者且內容有差異 | 列出只在 docx／只在 md／兩邊不同三類差異，請使用者逐項裁決；不改 md、不把未裁決的差異寫進 requirements | 對話中有差異清單與逐項裁決；`requirements.md` 的 `Sources` 如實記錄 | ☐ |
 | C22 | SD 悄悄與 requirements 脫鉤 | requirements 升版後 SD 沒跟上，或 SD 有 requirement 沒對應 | `shan-spec-qa` 設計書模式 D3 報 `Based on` 落後與 `B − A` 漏接；`shan-to-spec` 在 SD 落後時停下 | `qa-report.md` 列出落差；刻意讓 `Based on` 落後後 to-spec 拒絕往下 | ☐ |
 | C23 | SD 的 DDL 或 URL 與 codebase 現況衝突卻沒被發現，或沒有可查證來源時用猜的通過 | SD 寫了已存在的欄位；或不給 codebase 參考路徑 | 有路徑時 D2/D4 抓到衝突；沒路徑時 D2 標「未驗」，`shan-to-sd` 對查不到的標「待確認」，不用猜的填 | `qa-report.md` D2 的結果與「未驗」標記；SD 內有「待確認」標記 | ☐ |
+| C24 | 單人專案被團隊流程的交接階段擋住 | 沒有 SA、沒有 SD 的 repo，`grill` 定案後直接跑 `shan-to-spec` | 判定為單人模式並說明；不要求已簽出的 requirements 或 SD；產出 requirements、design、tasks 三份；config 的 SD 即使寫「有」也不擋 | 對話開場有模式判定一句話；`spec-draft/` 三份齊全；沒有出現「請先跑 shan-to-req／shan-to-sd」的停下訊息 | ☐ |
 
 ## 通過判準
 
