@@ -6,7 +6,7 @@ C1–C13 對應設計文件「實跑證據」的偏差（E1–E10），C14 起�
 
 | # | 失敗形狀 | 觸發條件 | v2 應有行為 | 驗證方式 | 結果 |
 |---|---|---|---|---|---|
-| C1 | 自動審查輪的兩軸在同一個 context 內執行，沒有平行 | `shan-implement` 完成 commit 後啟動自動審查 | 呼叫的是 fork 的 `shan-code-review`；它以 Agent 工具同時 spawn 兩個具名 agent | `review-S<X>.md` 的「審查方式」行寫明兩軸各一 agent；呼叫端的工具記錄可見兩個 Agent 呼叫並行 | ☑ |
+| C1 | 自動審查輪的兩個面向在同一個 context 內執行，沒有平行 | `shan-implement` 完成 commit 後啟動自動審查 | 呼叫的是 fork 的 `shan-code-review`；它以 Agent 工具同時 spawn 兩個具名 agent | `review-S<X>.md` 的「審查方式」行寫明兩個面向各一 agent；呼叫端的工具記錄可見兩個 Agent 呼叫並行 | ☑ |
 | C2 | 跨棒事實沒有正式落點，實作者自行發明檔案 | 某棒查證出 spec 沒寫、會影響後續棒次的事實 | 追加到 `findings.md`，格式符合草稿區契約；下一棒開場讀到它 | 該棒結束後 `findings.md` 有新條目且標「發現於 / 影響」；下一棒的開場對話引用了它 | ☑ |
 | C3 | spec 層級的上升只在對話裡說，視窗關掉就消失 | 實作或審查發現 spec 矛盾、缺漏或不可行 | 在 `issues/` 開票，兩案併陳 + 推薦立場，狀態 `ready-for-human`，同時告知使用者 | `issues/NN-*.md` 存在，票頭三行齊全；使用者裁決後 `## Comments` 有記錄 | ☑ |
 | C4 | 前置盤點結果另開檔 | 有「開工前必辦」類的盤點 | 寫進 `findings.md`，不另開檔 | 草稿區沒有 `baseline.md` 之類的孤兒檔 | ☑ |
@@ -17,7 +17,7 @@ C1–C13 對應設計文件「實跑證據」的偏差（E1–E10），C14 起�
 | C9 | 專案內同職責的舊 skill 自動觸發，帶進相反指引 | 執行 `shan-setup` 或任何 shan-* skill | `shan-setup` 列出重疊 skill 並讓使用者三選一；處置後不再有自動觸發 | 驗證輪三棒的對話中沒有非 shan-* 的 spec / 實作 / 審查類 skill 被載入 | ☑ |
 | C10 | 審查者直接改檔，自動輪與手動輪行為分岔 | 任一輪審查出 🔴 | fork 的審查者只回報；呼叫端對 🔴 查證成立才修、🟡 等裁決；報告末尾有「呼叫端待辦」 | 審查 subagent 的工具記錄沒有 Edit / Write；`review-S<X>.md` 的「已修正」附修正 commit 而非審查者的改動 | ☑ |
 | C11 | 地圖的修訂記錄覆蓋了 skill 的流程步驟 | 任何一棒開場讀到與 skill 相反的地圖條目 | 以 skill 為準執行，並提醒使用者該條目過時、建議追加一筆取代 | 開場對話有指出衝突；地圖修訂記錄多一筆「取代」條目而不是照做 | ☑ |
-| C12 | fork 派出兩軸後沒等它們回來就結束，彙整與兩軸分歧的裁定掉回作者的 context | 任一次自動輪 | 兩個 Agent 呼叫同區塊且各帶 `run_in_background: false`；fork 等兩軸都回來、自己完成 Step 5 彙整與裁定、回傳完整報告；fork 內不跑完整驗證 | `review-S<X>.md` 的「審查方式」行**沒有**「未彙整」「額度上限」「由呼叫端轉述」之類的註記，且寫著「彙整於 fork 內完成」 | ☑（模擬輪） |
+| C12 | fork 派出兩個面向後沒等它們回來就結束，彙整與兩個面向分歧的裁定掉回作者的 context | 任一次自動輪 | 兩個 Agent 呼叫同區塊且各帶 `run_in_background: false`；fork 等兩個面向都回來、自己完成 Step 5 彙整與裁定、回傳完整報告；fork 內不跑完整驗證 | `review-S<X>.md` 的「審查方式」行**沒有**「未彙整」「額度上限」「由呼叫端轉述」之類的註記，且寫著「彙整於 fork 內完成」 | ☑（模擬輪） |
 | C13 | 棒次做完卻沒有審查記錄，而且沒人發現 | 任一棒開場與收尾 | 開場比對「地圖裡已完成的棒次」與「實際存在的 review 檔」，有落差就停下來問；收尾確認自己這棒的 review 檔已寫出 | 棒次編號集合 − review 檔編號集合 = 空；刻意跳過的在地圖修訂記錄有一行寫明理由 | ☐ |
 | C14 | PG 端 spec 悄悄改了 SA 的 requirements | 團隊流程下跑 `shan-to-spec` 與 `shan-spec-qa` 完整模式 | `spec-draft/requirements.md` 與 `handoff-in/requirements.md` 逐字相同；被改過則閘門 3b 判阻斷級 | `diff` 為空；刻意改一個字後 `qa-report.md` 的 3b 為 ⚠️ 且標阻斷 | ☐ |
 | C15 | requirements 有疑義時，PG 自己補完或默默猜 | requirements 含一條含糊驗收條件（如「盡快」） | `shan-to-spec` 不補不猜：`req-questions.md` 追加一則，標阻斷與否；阻斷＝否時 design 對應處標「待確認」 | `req-questions.md` 有條目且格式符合契約；requirements 檔案無改動 | ☐ |
@@ -61,16 +61,16 @@ C1–C13 對應設計文件「實跑證據」的偏差（E1–E10），C14 起�
 
 **本輪發現的新缺陷**（已轉為 C12、C13）：
 
-- **C12 — fork 未彙整就返回**：S16、S21、S22、S24、S26、S27、FINAL 至少七次，「審查方式」行自述「派出兩軸後即返回未彙整」「撞到 session 額度上限」「由呼叫端自 subagent transcript 取回」。兩軸的實質發現都有抵達，但 Step 5 的彙整與**兩軸分歧裁定**掉回作者的 context，正是 D2 要防的那件事。推測根因：Agent 工具預設 `run_in_background: true`，fork 派完兩個 agent 後沒有待辦就結束了；Step 6 在 fork 內跑分鐘級測試會加重這件事。
+- **C12 — fork 未彙整就返回**：S16、S21、S22、S24、S26、S27、FINAL 至少七次，「審查方式」行自述「派出兩個面向後即返回未彙整」「撞到 session 額度上限」「由呼叫端自 subagent transcript 取回」。兩個面向的實質發現都有抵達，但 Step 5 的彙整與**兩個面向分歧裁定**掉回作者的 context，正是 D2 要防的那件事。推測根因：Agent 工具預設 `run_in_background: true`，fork 派完兩個 agent 後沒有待辦就結束了；Step 6 在 fork 內跑分鐘級測試會加重這件事。
 - **C13 — S12 無審查記錄**：地圖有「S12 實作」條目，但沒有 `review-S12.md`，也沒有 S12 的審查條目。18 棒裡漏掉一棒。
 
 **測試基礎設施的小問題**：`tests/guard-test.mjs` 用固定的沙盒路徑，併行跑多份會互相干擾（同時跑三份時四個分支判斷案例假性紅燈）。單獨跑時正常。沙盒路徑應帶 PID 或亂數。**已修（`9e6b1d2`）**，併行兩份各 29/29 通過。
 
 ### 2026-10-01 — C12 修正後的模擬自動輪
 
-**範圍**：以 shan-skills 自己的 C12／C13 修正（`cdfde1b`..HEAD，4 個 commit）為標的，由作者身分呼叫 `shan-skills:shan-code-review`。這個 repo 沒有 `.shan/config.md`、沒有 spec、沒有草稿區，意圖軸走無 spec 模式，因此**只驗得到機制、驗不到意圖軸的完整行為**。
+**範圍**：以 shan-skills 自己的 C12／C13 修正（`cdfde1b`..HEAD，4 個 commit）為標的，由作者身分呼叫 `shan-skills:shan-code-review`。這個 repo 沒有 `.shan/config.md`、沒有 spec、沒有草稿區，需求面走無 spec 模式，因此**只驗得到機制、驗不到需求面的完整行為**。
 
-**C12 ☑（模擬輪）**。證據：回傳報告的「審查方式」行寫著「兩軸各一 agent 平行（shan-review-standards / shan-review-intent），彙整於 fork 內完成」；結論段自述「兩軸皆確實執行，彙整與分歧裁定在 fork 內完成」；fork 自己裁定了一則兩軸分級不一致的項目（規範軸 🟡 vs 意圖軸 🔴，裁定採意圖軸）；測試結果欄如實寫「未提供，呼叫端補跑後自行確認」，沒有在 fork 內跑完整套件。**下一個真實 spec 的第一棒仍要再確認一次**，因為模擬輪沒有草稿區與 spec。
+**C12 ☑（模擬輪）**。證據：回傳報告的「審查方式」行寫著「兩個面向各一 agent 平行（shan-review-standards / shan-review-intent），彙整於 fork 內完成」；結論段自述「兩個面向皆確實執行，彙整與分歧裁定在 fork 內完成」；fork 自己裁定了一則兩個面向分級不一致的項目（規範面 🟡 vs 需求面 🔴，裁定採需求面）；測試結果欄如實寫「未提供，呼叫端補跑後自行確認」，沒有在 fork 內跑完整套件。**下一個真實 spec 的第一棒仍要再確認一次**，因為模擬輪沒有草稿區與 spec。
 
 **C13 未驗**：需要連續兩棒才驗得到開場的集合比對。
 

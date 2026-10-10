@@ -22,7 +22,7 @@ shan-plan         spec ──────────────→ session 地
      ↓
 shan-implement    一棒一個視窗 ──────→ 綠燈 + commit + 自動審查
      ↓
-shan-code-review  fork 的乾淨 context ─→ 規範軸 ∥ 意圖軸，並排回報
+shan-code-review  fork 的乾淨 context ─→ 規範面 ∥ 需求面，並排回報
 ```
 
 ### 團隊流程：SA 與 PG 分段接力
@@ -77,7 +77,7 @@ PG（程式專案）                                      handoff-in/
 | `shan-spec-qa` | 對 spec 文件本身做品保；語意審查強制由不共享脈絡的獨立審查者執行。**需求模式**審 requirements 能不能交給 PG，**設計書模式**審 SD 是否忠於需求且不與 codebase 衝突，**完整模式**審整份 spec 並比對是否忠於 requirements 與 SD | requirements 準備簽出前；spec 初稿或修訂完，準備開工前 |
 | `shan-plan` | 把任務清單切成 session 邊界，產出地圖與每棒的開場 prompt | 任務數超過 3，要開始實作 |
 | `shan-implement` | 議定測試切入點 → 紅綠迴圈 → 驗證閘門 → 收尾交棒 → 自動審查。只做被指派的那一棒 | 動工一棒 |
-| `shan-code-review` | 在 fork 出來的乾淨 context 平行 spawn 兩軸審查 agent，並排回報、不跨軸重排、**只回報不動手** | 一棒 commit 之後（自動），或另開視窗做第 2 輪／最終把關 |
+| `shan-code-review` | 在 fork 出來的乾淨 context 平行 spawn 兩個面向審查 agent，並排回報、不跨面向重排、**只回報不動手** | 一棒 commit 之後（自動），或另開視窗做第 2 輪／最終把關 |
 
 除了 `shan-code-review`，其餘都掛 `disable-model-invocation: true`——**只能手動叫**，不會自動觸發。`shan-code-review` 不能掛這個旗標，因為它擋的是「模型的一切呼叫」而不只是自動觸發，掛了 `shan-implement` 就無法在 commit 後呼叫它；改以 description 明寫「只在自動輪或使用者明確呼叫時使用」來防誤觸發。呼叫名是 `/shan-skills:shan-grill`，短別名 `/shan-grill` 在沒有同名 skill 時也能用。
 
@@ -128,7 +128,7 @@ hook 腳本以 bash 執行；Windows 需要 Git Bash（Claude Code 本身就要�
 2. **config 是 cache，不是抄本。** 只記查不到、或查起來貴的東西；一個指令查得到的當下狀態寫成查詢方式，不寫答案。
 3. **格式契約住在專案裡，config 只指路。** 契約跟著 repo 走，不跟著 skill 走。
 4. **事實是 agent 的工作，決策是人的工作。** 能查的一律自己查；該裁決的一律送到人面前等。
-5. **審查者的 context 必須乾淨，而且是機制不是紀律。** `shan-code-review` 以 `context: fork` 執行，不論從哪裡呼叫都看不到呼叫端的對話；兩軸各一個 agent 平行跑。審查者只回報；呼叫端對 🔴 逐條查證成立就修，🟡 等使用者裁決，修正在提請 follow-up commit 時攤開。
+5. **審查者的 context 必須乾淨，而且是機制不是紀律。** `shan-code-review` 以 `context: fork` 執行，不論從哪裡呼叫都看不到呼叫端的對話；兩個面向各一個 agent 平行跑。審查者只回報；呼叫端對 🔴 逐條查證成立就修，🟡 等使用者裁決，修正在提請 follow-up commit 時攤開。
 6. **「絕不該做」的事由 hook 擋，不由 prose 擋。** 寫入已核可的 spec、amend、force push、在預設分支 commit——這些不靠模型記得，靠 `PreToolUse` 拒絕。需要判斷的事（未經同意不 commit）仍留在 prose。
 7. **跨 session 的狀態只走草稿區契約。** `findings.md`、`issues/`、`review-S<X>.md`、地圖的修訂記錄——每個檔誰產、誰讀、追加還是覆寫，都有明文。skill 不各自發明檔案。
 8. **寫入 spec 目錄前一定經過人工核可。** skill 先寫草稿，你核可後才進正式位置。
@@ -163,7 +163,7 @@ skill 層的評測是手動清單，見 [evals/cases.md](./evals/cases.md)。
 
 ```
 .claude-plugin/plugin.json      plugin manifest
-skills/shan-*/                  十二支 skill（shan-setup 含 config / guard 樣板、spec / 需求分析書 / SD 格式預設與 docx 對應樣板；shan-code-review 含兩軸檢查清單）
+skills/shan-*/                  十二支 skill（shan-setup 含 config / guard 樣板、spec / 需求分析書 / SD 格式預設與 docx 對應樣板；shan-code-review 含兩個面向檢查清單）
 agents/                         shan-review-standards、shan-review-intent
 hooks/hooks.json                PreToolUse 註冊
 scripts/                        guard-protected-paths.sh、guard-git.sh、lib.sh
