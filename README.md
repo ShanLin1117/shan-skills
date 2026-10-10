@@ -4,7 +4,7 @@
 
 大多數 AI coding skill 都會長進專案裡：寫死框架版本、目錄路徑、測試基底類別、commit 慣例。換一個專案就得整套重寫。**這套的做法相反——skill 本體一個專案字眼都沒有，所有 repo 專屬的事實住在該 repo 的 `.shan/config.md`。** 同一套 skill 因此可以跨專案帶著走，而每個專案仍然拿到符合自己慣例的行為。
 
-2026 年 9 月的改版在此之上加了兩層：**草稿區契約**（跨 session 的狀態怎麼交接）與 **harness 層**（護欄由 hook 擋，不靠提示詞）。
+除了 skill 本身，另有兩層機制讓流程可靠：**草稿區契約**定義跨 session 的狀態怎麼交接；**harness 層**由 hook 擋下不該做的操作，不靠提示詞自律。
 
 ## 工作流
 
@@ -56,7 +56,7 @@ PG（程式專案）                                      handoff-in/
 - **PG 不改上游**：`spec-qa` 逐字比對 PG 手上的副本，被動過就是阻斷級
 - **docx 是輸出品，不是來源**：`shan-to-docx` 以專案的 Word 範本為底轉換（樣式對應檔由專案提供）；畫面截圖等複雜內容人工補。`shan-to-req` 同時讀 md 與補完的 docx，兩者有差異時由你裁決
 - **團隊沒有的階段就跳過**：沒有系統設計書就在 config 寫「無」，整段不走
-- **單人流程不需要任何交接階段**：沒有 SA、沒有 SD 的專案，`grill → to-spec` 一步就產出 requirements、design、tasks，與最初相同。`shan-to-spec` 看上游產物決定模式——有 `handoff-in/` 才進接力模式（唯讀、要求簽出）；否則由決策自己補上。團隊流程的階段只有真的存在才會被要求
+- **單人流程不需要任何交接階段**：沒有 SA、沒有 SD 的專案，`grill → to-spec` 一步就產出 requirements、design、tasks。`shan-to-spec` 看上游產物決定模式——有 `handoff-in/` 才進接力模式（唯讀、要求簽出）；否則由決策自己補上。團隊流程的階段只有真的存在才會被要求
 
 細節見 [docs/scratch-contract.md](./docs/scratch-contract.md)。
 
@@ -134,15 +134,6 @@ hook 腳本以 bash 執行；Windows 需要 Git Bash（Claude Code 本身就要�
 8. **寫入 spec 目錄前一定經過人工核可。** skill 先寫草稿，你核可後才進正式位置。
 9. **每支 skill 都能單獨使用，階段都可以省略，缺上游時降級而不是擋下來。** 沒有 config 照樣跑（用預設與自行探索）；沒有格式契約用附的預設；沒有 spec 或 SD 就依手上有的做。**會停下來的只有三種**：待決事項要由人拍板、人工核可閘門（簽出、搬進 spec 目錄、commit 點頭）、會覆蓋人工編輯過的檔案。 skill 依上游產物存不存在決定行為，不依角色。「簽出」「版次比對」是交接機制，只有真的收到別人的交付件才適用；單人專案不該為了沒有的角色多跑步驟。skill 只是把你會做的步驟少打幾個字。
 
-## 實跑記錄
-
-| 階段 | 專案 | 規模 | 結果 |
-|---|---|---|---|
-| 改版前 | 一個 Java / Spring Boot 客戶專案（內網 GitLab，Kiro spec） | 一份 spec 16 棒走完；另一份 47 個任務切 28 棒，跑到 S9 | 骨架與審查紀律有效；暴露十條偏差，整理於 [docs/redesign-2026-09.md](./docs/redesign-2026-09.md) 的「實跑證據」 |
-| 改版後 | 同一專案 | 同一份 spec 接續跑完 S10–S27 加一份全案把關 | 十一條評測案例逐條回溯驗過，結果見 [evals/cases.md](./evals/cases.md) |
-
-改版前後的差異、每條決策的取捨與放棄的替代案，都在 [docs/redesign-2026-09.md](./docs/redesign-2026-09.md)。
-
 ## 測試
 
 harness 層有自動化測試：
@@ -151,7 +142,7 @@ harness 層有自動化測試：
 node tests/guard-test.mjs
 ```
 
-它在暫存目錄建一個沙盒 repo，對兩支 guard 腳本餵 29 組 `PreToolUse` JSON，驗證拒絕與放行。docx 轉換腳本另有測試（需要 `python-docx`，請裝在專案虛擬環境）：
+它在暫存目錄建一個沙盒 repo，對兩支 guard 腳本餵多組 `PreToolUse` JSON，驗證拒絕與放行。docx 轉換腳本另有測試（需要 `python-docx`，請裝在專案虛擬環境）：
 
 ```bash
 python -X utf8 tests/docx-test.py
@@ -170,7 +161,7 @@ scripts/                        guard-protected-paths.sh、guard-git.sh、lib.sh
 scripts/docx/                   md_to_docx.py、docx_dump.py（通用，不含專案知識）
 tests/guard-test.mjs            harness 層測試
 tests/docx-test.py              docx 腳本測試
+WORKFLOW.md                     以一個具體功能走過完整流程的範例
 docs/scratch-contract.md        草稿區契約
-docs/redesign-2026-09.md        2026 年 9 月改版的設計文件
 evals/cases.md                  skill 層的評測案例
 ```
