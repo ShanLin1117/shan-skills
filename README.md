@@ -76,7 +76,7 @@ PG（程式專案）                                      handoff-in/
 | `shan-to-spec` | 把 SA 簽出的 requirements 與 SD 加上實作決策，綜合成 design + tasks。不改上游，疑義退回；上游釋出新 rev 時做修訂 | PG 收到 requirements 並審訊完，要寫設計與任務 |
 | `shan-spec-qa` | 對 spec 文件本身做品保；語意審查強制由不共享脈絡的獨立審查者執行。**需求模式**審 requirements 能不能交給 PG，**設計書模式**審 SD 是否忠於需求且不與 codebase 衝突，**完整模式**審整份 spec 並比對是否忠於 requirements 與 SD | requirements 準備簽出前；spec 初稿或修訂完，準備開工前 |
 | `shan-plan` | 把任務清單切成 session 邊界，產出地圖與每棒的開場 prompt | 任務數超過 3，要開始實作 |
-| `shan-implement` | 議定 seam → 紅綠迴圈 → 驗證閘門 → 收尾交棒 → 自動審查。只做被指派的那一棒 | 動工一棒 |
+| `shan-implement` | 議定測試切入點 → 紅綠迴圈 → 驗證閘門 → 收尾交棒 → 自動審查。只做被指派的那一棒 | 動工一棒 |
 | `shan-code-review` | 在 fork 出來的乾淨 context 平行 spawn 兩軸審查 agent，並排回報、不跨軸重排、**只回報不動手** | 一棒 commit 之後（自動），或另開視窗做第 2 輪／最終把關 |
 
 除了 `shan-code-review`，其餘都掛 `disable-model-invocation: true`——**只能手動叫**，不會自動觸發。`shan-code-review` 不能掛這個旗標，因為它擋的是「模型的一切呼叫」而不只是自動觸發，掛了 `shan-implement` 就無法在 commit 後呼叫它；改以 description 明寫「只在自動輪或使用者明確呼叫時使用」來防誤觸發。呼叫名是 `/shan-skills:shan-grill`，短別名 `/shan-grill` 在沒有同名 skill 時也能用。

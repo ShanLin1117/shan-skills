@@ -24,7 +24,7 @@ disable-model-invocation: true
 
 **團隊流程下，需求已由 SA 定案**：`<草稿區>/<feature-slug>/handoff-in/requirements.md` 存在時（單人流程下沒有這個檔，則讀已簽出的 `spec-draft/requirements.md`，SD 則讀 `doc-draft/` 裡已簽出的同名檔），把它當**已知前提**讀完——它的 `Status` 要是 `released`，記下 `Rev`。config A 節「系統設計書」為「有」時，`handoff-in/` 還會有 `<名稱>_SD.md`（或 docx，用 `${CLAUDE_SKILL_DIR}/../../scripts/docx/docx_dump.py` 讀），同樣當**已知前提**：SD 已定的資料表、DDL、URL、流程契約**不重議**。
 
-這種審訊問的是**SD 之下的實作決策**（架構、模組切分、測試 seam、SD 沒覆蓋的部分），**不重問需求、不推翻 SD**。需求或 SD 本身含糊、矛盾或少分支時，不要在審訊裡替 SA 決定，改在 `req-questions.md` 追加一則疑義（格式見草稿區契約），並把依賴它的決策留在「待決」。
+這種審訊問的是**SD 之下的實作決策**（架構、模組切分、測試切入點、SD 沒覆蓋的部分），**不重問需求、不推翻 SD**。需求或 SD 本身含糊、矛盾或少分支時，不要在審訊裡替 SA 決定，改在 `req-questions.md` 追加一則疑義（格式見草稿區契約），並把依賴它的決策留在「待決」。
 
 **判別兩種模式**：SD 已簽出（`handoff-in/` 或 `doc-draft/` 有 `Status: released` 的 SD）= **實作決策模式**（PG 在 SD 之下做決定，決策不加標籤）；config 的 SD 為「有」但還沒有已簽出的 SD = **系統設計模式**（下一段）。拿不準就問使用者。
 
