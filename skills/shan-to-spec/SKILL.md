@@ -34,8 +34,8 @@ disable-model-invocation: true
 
 ## Step 1：載入
 
-1. **`.shan/config.md`** —— 缺就告訴使用者跑 `/shan-skills:shan-setup`；首行不是 `<!-- shan-config: v2 -->` 就提示一次「config 是舊版」，以現有內容繼續
-2. **格式契約** —— config **A 節**指向的那份，**只取 design 與 tasks 的部分**。標題、必要章節、生成標頭一律以它為準，本 skill 不重述任何模板
+1. **`.shan/config.md`** —— 缺就提示一次可跑 `/shan-skills:shan-setup`，**然後照樣進行**（草稿區預設 `.scratch/`、事實查核自行探索、格式契約用 skill 附的預設樣板；不要因為沒有 config 就停下來）；首行不是 `<!-- shan-config: v2 -->` 就提示一次「config 是舊版」，以現有內容繼續
+2. **格式契約** —— config **A 節**指向的那份，**只取 design 與 tasks 的部分**。標題、必要章節、生成標頭一律以它為準，本 skill 不重述任何模板。config 沒有指向契約時，用 `${CLAUDE_SKILL_DIR}/../shan-setup/spec-format-default.md`，並在交付時說明
 3. **requirements（輸入）** —— 依 Step 0 的模式：
    - 接力模式：讀 `handoff-in/requirements.md`（唯讀）。`## Release Info` 的 `Status` 不是 `released` 就**停下來**，要 SA 先簽出；記下 `Rev`
    - 單人模式（已有需求）：讀 `spec-draft/requirements.md`，記下 `Rev`（若有 Release Info）；`Status` 不是 `released` 只提示一次

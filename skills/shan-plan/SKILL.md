@@ -18,7 +18,7 @@ disable-model-invocation: true
 
 ## Step 1：載入
 
-1. **`.shan/config.md`** —— 缺就告訴使用者跑 `/shan-skills:shan-setup`；首行不是 `<!-- shan-config: v2 -->` 就提示一次「config 是舊版」，以現有內容繼續
+1. **`.shan/config.md`** —— 缺就提示一次可跑 `/shan-skills:shan-setup`，**然後照樣進行**（草稿區預設 `.scratch/`、事實查核自行探索、格式契約用 skill 附的預設樣板；不要因為沒有 config 就停下來）；首行不是 `<!-- shan-config: v2 -->` 就提示一次「config 是舊版」，以現有內容繼續
 2. **spec 全部文件** —— 位置見 config **A 節**。**三個角色都要讀完**：需求（風險評估的來源）、設計（分層的主要依據）、任務（切割的對象）。只看任務清單會切錯
 3. **既有的依賴圖** —— spec 的依賴圖章節就是阻塞邊，不要自己重新推導一份
 4. **草稿區的既有檔**（格式見 `${CLAUDE_SKILL_DIR}/../../docs/scratch-contract.md`，下稱**草稿區契約**）：

@@ -16,8 +16,8 @@ SD 是 SA 交給 PG 的**設計契約**：DB 與介面的決定在這裡定案�
 
 ## Step 1：載入
 
-1. **`.shan/config.md`** —— 缺就告訴使用者跑 `/shan-skills:shan-setup`；首行不是 `<!-- shan-config: v2 -->` 就提示一次「config 是舊版」，以現有內容繼續。**A 節「系統設計書」若為「無」或欄位不存在，告訴使用者 config 沒有啟用 SD 階段，並問他本次是否仍要產（他親自呼叫這支 skill 就是意圖，不要硬擋）；要長期啟用請他把該欄改成「有」（或跑 `shan-setup`）**
-2. **格式契約** —— config **A 節「交接物 → 系統設計書」**指向的那份。標題、章節、`對應需求` 行、`Release Info` 一律以它為準，本 skill 不重述模板
+1. **`.shan/config.md`** —— 缺就提示一次可跑 `/shan-skills:shan-setup`，**然後照樣進行**（草稿區預設 `.scratch/`、事實查核自行探索、格式契約用 skill 附的預設樣板；不要因為沒有 config 就停下來）；首行不是 `<!-- shan-config: v2 -->` 就提示一次「config 是舊版」，以現有內容繼續。**A 節「系統設計書」若為「無」或欄位不存在，告訴使用者 config 沒有啟用 SD 階段，並問他本次是否仍要產（他親自呼叫這支 skill 就是意圖，不要硬擋）；要長期啟用請他把該欄改成「有」（或跑 `shan-setup`）**
+2. **格式契約** —— config **A 節「交接物 → 系統設計書」**指向的那份。標題、章節、`對應需求` 行、`Release Info` 一律以它為準，本 skill 不重述模板。config 沒有指向契約時，用 `${CLAUDE_SKILL_DIR}/../shan-setup/sd-format-default.md`，並在交付時說明
 3. **命名** —— 同一節的命名規則（例：`<功能名稱>_SD`）
 4. **requirements（輸入，唯讀）** —— `<草稿區>/<feature-slug>/spec-draft/requirements.md`（SA 端）、`handoff-in/requirements.md`，或 config A 節 spec 目錄裡已簽出的版本（草稿區副本已清掉時）。讀 `## Release Info`：`Status` 不是 `released` 時，**告訴使用者並請他裁決**——簽出者通常就是他自己（單人專案）或同事（團隊），可以當場請簽出者改 `Status`，或使用者明說「照 draft 做」。明說照做就繼續，並在 SD 的 `Based on` 註明 `requirements rev N（draft）`。**不要替使用者決定、也不要硬擋**；記下 `Rev`
 5. **需求分析書** —— `doc-draft/<名稱>_SA.md`，以及人工補過的 `.docx`（用 `python -X utf8 ${CLAUDE_SKILL_DIR}/../../scripts/docx/docx_dump.py <檔案>` 傾印，圖片只會標 `[IMAGE]`，內容不解析；畫面異動的細節向使用者確認）

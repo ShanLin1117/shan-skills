@@ -16,8 +16,8 @@ disable-model-invocation: true
 
 ## Step 1：載入
 
-1. **`.shan/config.md`** —— 缺就告訴使用者跑 `/shan-skills:shan-setup`；首行不是 `<!-- shan-config: v2 -->` 就提示一次「config 是舊版」，以現有內容繼續
-2. **格式契約** —— config **A 節**指向的那份，**只取 requirements 的部分**。標題、必要章節、驗收條件句式一律以它為準，本 skill 不重述模板
+1. **`.shan/config.md`** —— 缺就提示一次可跑 `/shan-skills:shan-setup`，**然後照樣進行**（草稿區預設 `.scratch/`、事實查核自行探索、格式契約用 skill 附的預設樣板；不要因為沒有 config 就停下來）；首行不是 `<!-- shan-config: v2 -->` 就提示一次「config 是舊版」，以現有內容繼續
+2. **格式契約** —— config **A 節**指向的那份，**只取 requirements 的部分**。標題、必要章節、驗收條件句式一律以它為準，本 skill 不重述模板。config 沒有指向契約時，用 `${CLAUDE_SKILL_DIR}/../shan-setup/spec-format-default.md` 的 requirements 部分，並在交付時說明
 3. **上游文件（主要輸入）** —— 需求分析書：
    - `doc-draft/<名稱>_SA.md`（`shan-to-sa` 產的）
    - 人工補完的 `<名稱>_SA.docx`（使用者指定路徑；用 `python -X utf8 ${CLAUDE_SKILL_DIR}/../../scripts/docx/docx_dump.py <檔案>` 傾印，圖片標 `[IMAGE]`、內容不解析，畫面細節向使用者確認）

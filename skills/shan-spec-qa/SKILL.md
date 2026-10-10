@@ -28,7 +28,7 @@ spec 的錯誤會被**完整放大**到實作。而 spec 的問題有兩種，�
 
 ## Step 0：載入
 
-- `.shan/config.md`——缺就告訴使用者跑 `/shan-skills:shan-setup`；首行不是 `<!-- shan-config: v2 -->` 就提示一次「config 是舊版」，以現有內容繼續
+- `.shan/config.md`——缺就提示一次可跑 `/shan-skills:shan-setup`，**然後照樣進行**（草稿區預設 `.scratch/`、事實查核自行探索、格式契約用 skill 附的預設樣板；不要因為沒有 config 就停下來）；首行不是 `<!-- shan-config: v2 -->` 就提示一次「config 是舊版」，以現有內容繼續
 - 草稿區檔案格式依 `${CLAUDE_SKILL_DIR}/../../docs/scratch-contract.md`（下稱**草稿區契約**）
 - **判定模式**（見下一節）
 - spec 在草稿區的 `spec-draft/` 還是已在正式 spec 目錄？**正式目錄受 hook 保護、不可寫**——修訂時見「修訂怎麼落」

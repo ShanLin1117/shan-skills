@@ -14,7 +14,7 @@ disable-model-invocation: true
 
 ## Step 1：載入
 
-1. **`.shan/config.md`** —— 缺就告訴使用者跑 `/shan-skills:shan-setup`；首行不是 `<!-- shan-config: v2 -->` 就提示一次「config 是舊版」，以現有內容繼續。G 節缺「審查修正的 commit 政策」等 v2 欄位時，一律視為「等使用者指示」
+1. **`.shan/config.md`** —— 缺就提示一次可跑 `/shan-skills:shan-setup`，**然後照樣進行**（草稿區預設 `.scratch/`、事實查核自行探索、格式契約用 skill 附的預設樣板；不要因為沒有 config 就停下來）；首行不是 `<!-- shan-config: v2 -->` 就提示一次「config 是舊版」，以現有內容繼續。G 節缺「審查修正的 commit 政策」等 v2 欄位時，一律視為「等使用者指示」
 2. **config B 節「每棒必讀」** —— 全部讀完，不挑。git 流程、審查節奏這類規範漏讀一次就會違規
 3. **spec 全部文件**（位置見 config A 節）——**動手前全部讀完**，三個角色分工不同：
    - **需求** 告訴你做什麼、為什麼（也是測試斷言的真實來源，**驗收條件原文要保留，不要過早摘要**）
