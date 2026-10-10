@@ -18,7 +18,7 @@ disable-model-invocation: true
 
 ## Step 1：載入
 
-1. **`.shan/config.md`** —— 缺就告訴使用者跑 `/shan-skills:shan-setup`；首行不是 `<!-- shan-config: v2 -->` 就提示一次「config 是舊版」，以現有內容繼續
+1. **`.shan/config.md`** —— 缺就提示一次可跑 `/shan-skills:shan-setup`，**然後照樣進行**（草稿區預設 `.scratch/`、事實查核自行探索、格式契約用 skill 附的預設樣板；不要因為沒有 config 就停下來）；首行不是 `<!-- shan-config: v2 -->` 就提示一次「config 是舊版」，以現有內容繼續
 2. **spec 全部文件** —— 位置見 config **A 節**。**三個角色都要讀完**：需求（風險評估的來源）、設計（分層的主要依據）、任務（切割的對象）。只看任務清單會切錯
 3. **既有的依賴圖** —— spec 的依賴圖章節就是阻塞邊，不要自己重新推導一份
 4. **草稿區的既有檔**（格式見 `${CLAUDE_SKILL_DIR}/../../docs/scratch-contract.md`，下稱**草稿區契約**）：
@@ -185,7 +185,7 @@ disable-model-invocation: true
 > ```
 > /shan-skills:shan-implement 先讀 <草稿區>/<feature-slug>/session-map.md 的「共通背景」「S{X}」細節與「修訂記錄」，再讀同目錄的 findings.md 與 issues/ 中未 resolved 的票，然後依該棒範圍（任務 N）實作。做完跑該棒檢查點，綠燈後勾選對應任務，commit 前先讓我確認。
 > ```
-> `shan-implement` 會在 commit 之後**自動呼叫 fork 的 `shan-code-review`**（乾淨 context、兩軸平行），原文轉述結果、等你指定要修哪幾條，並依草稿區契約寫 `review-S{X}.md`。這一段不用你另外交代。
+> `shan-implement` 會在 commit 之後**自動呼叫 fork 的 `shan-code-review`**（乾淨 context、兩個面向平行），原文轉述結果、等你指定要修哪幾條，並依草稿區契約寫 `review-S{X}.md`。這一段不用你另外交代。
 >
 > **② 第 2 輪審查或最終把關（另開全新視窗）**
 > ```
@@ -203,7 +203,7 @@ disable-model-invocation: true
 
 **reviewer 不能看過實作過程。** 這跟 `shan-spec-qa` 閘門 4 是同一條原則：作者沿著原本的思路再走一次，抓不到那條思路沒照到的東西。
 
-這件事現在是機制：`shan-code-review` 宣告 `context: fork`，**不論從哪裡呼叫**，它都在一個看不到呼叫端對話的 subagent 裡執行，並自己平行 spawn 兩軸。所以：
+這件事現在是機制：`shan-code-review` 宣告 `context: fork`，**不論從哪裡呼叫**，它都在一個看不到呼叫端對話的 subagent 裡執行，並自己平行 spawn 兩個面向。所以：
 
 - 自動輪（`shan-implement` 呼叫）與手動輪（使用者另開視窗呼叫）跑的是**同一套機制**，差別只在呼叫端是不是作者
 - 自動輪的呼叫端是作者，它拿到報告後只能**原文轉述、等使用者裁決**；手動輪的呼叫端是乾淨視窗，可以直接依裁決修

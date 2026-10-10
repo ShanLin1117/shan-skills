@@ -16,8 +16,8 @@ disable-model-invocation: true
 
 ## Step 1：載入
 
-1. **`.shan/config.md`** —— 缺就告訴使用者跑 `/shan-skills:shan-setup`；首行不是 `<!-- shan-config: v2 -->` 就提示一次「config 是舊版」，以現有內容繼續
-2. **格式契約** —— config **A 節「交接物 → 需求分析書」**指向的那份。**標題、章節、內文要求一律以它為準**，本 skill 不重述任何模板。config 沒有這一項，就停下來請使用者跑 `shan-setup` 補，或明說「用 `sa-format-default.md` 的預設」
+1. **`.shan/config.md`** —— 缺就提示一次可跑 `/shan-skills:shan-setup`，**然後照樣進行**（草稿區預設 `.scratch/`、事實查核自行探索、格式契約用 skill 附的預設樣板；不要因為沒有 config 就停下來）；首行不是 `<!-- shan-config: v2 -->` 就提示一次「config 是舊版」，以現有內容繼續
+2. **格式契約** —— config **A 節「交接物 → 需求分析書」**指向的那份。**標題、章節、內文要求一律以它為準**，本 skill 不重述任何模板。config 沒有這一項，就用 `${CLAUDE_SKILL_DIR}/../shan-setup/sa-format-default.md` 的預設章節，並在交付時說明「本次用預設格式」。
 3. **命名** —— 同一節的命名規則（例：`<功能名稱>_SA`），功能名稱問使用者，不自己取
 4. **決策來源** —— `<草稿區>/<feature-slug>/grill.md`。沒有就從當前對話綜合，並在交付時說明「本次沒有 grill 記錄，決策來自對話」。只取 `[業務]` 標籤或無標籤的決策
 5. **專案脈絡** —— 依 config **B 節**順序讀既有的 SA 文件與需求規格書；詞彙用 config B 節指定的來源

@@ -22,7 +22,7 @@ shan-plan         spec ──────────────→ session 地
      ↓
 shan-implement    一棒一個視窗 ──────→ 綠燈 + commit + 自動審查
      ↓
-shan-code-review  fork 的乾淨 context ─→ 規範軸 ∥ 意圖軸，並排回報
+shan-code-review  fork 的乾淨 context ─→ 規範面 ∥ 需求面，並排回報
 ```
 
 ### 團隊流程：SA 與 PG 分段接力
@@ -56,7 +56,7 @@ PG（程式專案）                                      handoff-in/
 - **PG 不改上游**：`spec-qa` 逐字比對 PG 手上的副本，被動過就是阻斷級
 - **docx 是輸出品，不是來源**：`shan-to-docx` 以專案的 Word 範本為底轉換（樣式對應檔由專案提供）；畫面截圖等複雜內容人工補。`shan-to-req` 同時讀 md 與補完的 docx，兩者有差異時由你裁決
 - **團隊沒有的階段就跳過**：沒有系統設計書就在 config 寫「無」，整段不走
-- **單人流程不受影響**：同一個 repo、同一個人，依序跑；找不到 `handoff-in/` 時，`shan-grill`、`shan-to-sd`、`shan-to-spec` 改讀已簽出的 `spec-draft/requirements.md` 與 `doc-draft/` 裡的 SD
+- **單人流程不需要任何交接階段**：沒有 SA、沒有 SD 的專案，`grill → to-spec` 一步就產出 requirements、design、tasks，與最初相同。`shan-to-spec` 看上游產物決定模式——有 `handoff-in/` 才進接力模式（唯讀、要求簽出）；否則由決策自己補上。團隊流程的階段只有真的存在才會被要求
 
 細節見 [docs/scratch-contract.md](./docs/scratch-contract.md)。
 
@@ -76,8 +76,8 @@ PG（程式專案）                                      handoff-in/
 | `shan-to-spec` | 把 SA 簽出的 requirements 與 SD 加上實作決策，綜合成 design + tasks。不改上游，疑義退回；上游釋出新 rev 時做修訂 | PG 收到 requirements 並審訊完，要寫設計與任務 |
 | `shan-spec-qa` | 對 spec 文件本身做品保；語意審查強制由不共享脈絡的獨立審查者執行。**需求模式**審 requirements 能不能交給 PG，**設計書模式**審 SD 是否忠於需求且不與 codebase 衝突，**完整模式**審整份 spec 並比對是否忠於 requirements 與 SD | requirements 準備簽出前；spec 初稿或修訂完，準備開工前 |
 | `shan-plan` | 把任務清單切成 session 邊界，產出地圖與每棒的開場 prompt | 任務數超過 3，要開始實作 |
-| `shan-implement` | 議定 seam → 紅綠迴圈 → 驗證閘門 → 收尾交棒 → 自動審查。只做被指派的那一棒 | 動工一棒 |
-| `shan-code-review` | 在 fork 出來的乾淨 context 平行 spawn 兩軸審查 agent，並排回報、不跨軸重排、**只回報不動手** | 一棒 commit 之後（自動），或另開視窗做第 2 輪／最終把關 |
+| `shan-implement` | 議定測試切入點 → 紅綠迴圈 → 驗證閘門 → 收尾交棒 → 自動審查。只做被指派的那一棒 | 動工一棒 |
+| `shan-code-review` | 在 fork 出來的乾淨 context 平行 spawn 兩個面向審查 agent，並排回報、不跨面向重排、**只回報不動手** | 一棒 commit 之後（自動），或另開視窗做第 2 輪／最終把關 |
 
 除了 `shan-code-review`，其餘都掛 `disable-model-invocation: true`——**只能手動叫**，不會自動觸發。`shan-code-review` 不能掛這個旗標，因為它擋的是「模型的一切呼叫」而不只是自動觸發，掛了 `shan-implement` 就無法在 commit 後呼叫它；改以 description 明寫「只在自動輪或使用者明確呼叫時使用」來防誤觸發。呼叫名是 `/shan-skills:shan-grill`，短別名 `/shan-grill` 在沒有同名 skill 時也能用。
 
@@ -128,10 +128,11 @@ hook 腳本以 bash 執行；Windows 需要 Git Bash（Claude Code 本身就要�
 2. **config 是 cache，不是抄本。** 只記查不到、或查起來貴的東西；一個指令查得到的當下狀態寫成查詢方式，不寫答案。
 3. **格式契約住在專案裡，config 只指路。** 契約跟著 repo 走，不跟著 skill 走。
 4. **事實是 agent 的工作，決策是人的工作。** 能查的一律自己查；該裁決的一律送到人面前等。
-5. **審查者的 context 必須乾淨，而且是機制不是紀律。** `shan-code-review` 以 `context: fork` 執行，不論從哪裡呼叫都看不到呼叫端的對話；兩軸各一個 agent 平行跑。審查者只回報；呼叫端對 🔴 逐條查證成立就修，🟡 等使用者裁決，修正在提請 follow-up commit 時攤開。
+5. **審查者的 context 必須乾淨，而且是機制不是紀律。** `shan-code-review` 以 `context: fork` 執行，不論從哪裡呼叫都看不到呼叫端的對話；兩個面向各一個 agent 平行跑。審查者只回報；呼叫端對 🔴 逐條查證成立就修，🟡 等使用者裁決，修正在提請 follow-up commit 時攤開。
 6. **「絕不該做」的事由 hook 擋，不由 prose 擋。** 寫入已核可的 spec、amend、force push、在預設分支 commit——這些不靠模型記得，靠 `PreToolUse` 拒絕。需要判斷的事（未經同意不 commit）仍留在 prose。
 7. **跨 session 的狀態只走草稿區契約。** `findings.md`、`issues/`、`review-S<X>.md`、地圖的修訂記錄——每個檔誰產、誰讀、追加還是覆寫，都有明文。skill 不各自發明檔案。
 8. **寫入 spec 目錄前一定經過人工核可。** skill 先寫草稿，你核可後才進正式位置。
+9. **每支 skill 都能單獨使用，階段都可以省略，缺上游時降級而不是擋下來。** 沒有 config 照樣跑（用預設與自行探索）；沒有格式契約用附的預設；沒有 spec 或 SD 就依手上有的做。**會停下來的只有三種**：待決事項要由人拍板、人工核可閘門（簽出、搬進 spec 目錄、commit 點頭）、會覆蓋人工編輯過的檔案。 skill 依上游產物存不存在決定行為，不依角色。「簽出」「版次比對」是交接機制，只有真的收到別人的交付件才適用；單人專案不該為了沒有的角色多跑步驟。skill 只是把你會做的步驟少打幾個字。
 
 ## 實跑記錄
 
@@ -162,7 +163,7 @@ skill 層的評測是手動清單，見 [evals/cases.md](./evals/cases.md)。
 
 ```
 .claude-plugin/plugin.json      plugin manifest
-skills/shan-*/                  十二支 skill（shan-setup 含 config / guard 樣板、spec / 需求分析書 / SD 格式預設與 docx 對應樣板；shan-code-review 含兩軸檢查清單）
+skills/shan-*/                  十二支 skill（shan-setup 含 config / guard 樣板、spec / 需求分析書 / SD 格式預設與 docx 對應樣板；shan-code-review 含兩個面向檢查清單）
 agents/                         shan-review-standards、shan-review-intent
 hooks/hooks.json                PreToolUse 註冊
 scripts/                        guard-protected-paths.sh、guard-git.sh、lib.sh

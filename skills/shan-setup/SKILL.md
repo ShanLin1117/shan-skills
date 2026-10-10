@@ -121,7 +121,7 @@ disable-model-invocation: true
 
 問清楚這個團隊的流程有哪些交接物，**別預設有**。**`pg` 與 `sa` 輪廓都要問這一節**——PG 端的 `shan-to-spec` 靠「系統設計書」這一欄決定要不要等 SD 到手：
 
-1. **系統設計書（SD）**：有沒有這個階段？**一定要問**，並寫進 config A 節。沒有就寫「無」（skill 看到「無」或欄位不存在，都視為沒有，整段跳過）。有的話處理格式契約：沿用專案既有的，或用 [sd-format-default.md](./sd-format-default.md) 複製進專案（預設 `docs/specs/SD-FORMAT.md`）
+1. **系統設計書（SD）**：有沒有這個階段？**一定要問**，並寫進 config A 節。**單人專案、沒有 SA 交付設計書的，推薦「無」**——DB 與介面決策會直接寫進 `design.md`。沒有就寫「無」（skill 看到「無」或欄位不存在，都視為沒有，整段跳過）。寫「有」只代表**團隊流程會產出 SD**，單人專案即使寫了「有」，缺 SD 也不會擋住後面的 skill。有的話處理格式契約：沿用專案既有的，或用 [sd-format-default.md](./sd-format-default.md) 複製進專案（預設 `docs/specs/SD-FORMAT.md`）
 2. **需求分析書**（多為 `sa` 輪廓用）：有沒有？命名規則？格式契約——沿用既有，或用 [sa-format-default.md](./sa-format-default.md) 複製進專案（預設 `docs/specs/SA-FORMAT.md`）。沒有的團隊寫「不適用」
 3. **docx 輸出**：需求分析書、SD 各要輸出 Word 嗎？要的話進下面的「docx 對應子流程」。不輸出就寫「不適用」
 4. **codebase 參考路徑**（`sa` 輪廓）：見 Step 0
